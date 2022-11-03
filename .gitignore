@@ -1,0 +1,7 @@
+/build
+/build-*
+*.pyc
+*.ipynb
+core.*
+*.egg-info
+/dist
