@@ -22,7 +22,7 @@ set(FLATCC_SRCS
 )
 set(FLATCC_INCLUDE_DIR ${FLATCC_ROOT}/include)
 add_library(flatcc-runtime STATIC ${FLATCC_SRCS})
-target_include_directories(flatcc-runtime PRIVATE ${FLATCC_INCLUDE_DIR})
+target_include_directories(flatcc-runtime SYSTEM PUBLIC ${FLATCC_INCLUDE_DIR})
 
 add_executable(
   flatcc-cli
