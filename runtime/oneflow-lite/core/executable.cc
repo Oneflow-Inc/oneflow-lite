@@ -25,8 +25,8 @@ typedef struct OfLiteNativeExecutable {
   oneflow_lite_ExecutableDef_table_t def;
 } OfLiteNativeExecutable;
 
-OFLITE_API void OfLiteExecutableCreateFromPath(OfLiteExecutable** executable,
-                                               OfLiteStringRef filepath) {
+OFLITE_API void OfLiteExecutableCreate(OfLiteExecutable** executable,
+                                       OfLiteStringRef filepath) {
   FILE* file = fopen(filepath.data, "rb");
   if (file == NULL) {
     // TODO()

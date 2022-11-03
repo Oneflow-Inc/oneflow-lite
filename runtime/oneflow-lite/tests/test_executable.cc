@@ -2,7 +2,7 @@
 
 int main() {
   OfLiteExecutable* executable = NULL;
-  OfLiteExecutableCreateFromPath(&executable, OfLiteMakeStringRef("xxx"));
+  OfLiteExecutableCreate(&executable, OfLiteMakeStringRef("xxx"));
 
   OfLiteStringRef name;
   OfLiteExecutableName(executable, &name);

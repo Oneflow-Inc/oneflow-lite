@@ -29,8 +29,10 @@ typedef struct OfLiteBufferSegmentDef OfLiteBufferSegmentDef;
 typedef struct OfLiteOpDef OfLiteOpDef;
 typedef struct OfLiteOpFunctionDef OfLiteOpFunctionDef;
 
-OFLITE_API void OfLiteExecutableCreateFromPath(OfLiteExecutable** executable,
-                                               OfLiteStringRef filepath);
+OFLITE_API void OfLiteExecutableCreate(OfLiteExecutable** executable,
+                                       OfLiteStringRef filepath);
+
+OFLITE_API void OfLiteExecutableDestory(const OfLiteExecutable* executable);
 
 OFLITE_API void OfLiteExecutableName(const OfLiteExecutable* executable,
                                      OfLiteStringRef* name);
