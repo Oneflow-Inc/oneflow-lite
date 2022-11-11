@@ -28,4 +28,15 @@ limitations under the License.
 #define OFLITE_API OFLITE_EXPORT
 #endif  // __cplusplus
 
+#if defined(__clang__)
+#define OFLITE_UNUSED __attribute__((maybe_unused))
+#elif defined(__GNUC__) && !defined(__clang__)
+#define OFLITE_UNUSED __attribute__((unused))
+#else
+#define OFLITE_UNUSED
+#endif  // __clang__
+
+#define OFLITE_CAT(x, y) OFLITE_CAT_IMPL(x, y)
+#define OFLITE_CAT_IMPL(x, y) x##y
+
 #endif  // ONEFLOW_LITE_BASE_COMMON_H_

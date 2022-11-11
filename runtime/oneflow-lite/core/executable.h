@@ -32,7 +32,7 @@ typedef struct OfLiteOpFunctionDef OfLiteOpFunctionDef;
 OFLITE_API void OfLiteExecutableCreate(OfLiteExecutable** executable,
                                        OfLiteStringRef filepath);
 
-OFLITE_API void OfLiteExecutableDestory(const OfLiteExecutable* executable);
+OFLITE_API void OfLiteExecutableDestory(OfLiteExecutable* executable);
 
 OFLITE_API void OfLiteExecutableName(const OfLiteExecutable* executable,
                                      OfLiteStringRef* name);

@@ -58,9 +58,9 @@ OFLITE_API void OfLiteExecutableCreate(OfLiteExecutable** executable,
   *executable = reinterpret_cast<OfLiteExecutable*>(native_executable);
 }
 
-OFLITE_API void OfLiteExecutableDestory(const OfLiteExecutable* executable) {
-  const OfLiteNativeExecutable* native_executable =
-      reinterpret_cast<const OfLiteNativeExecutable*>(executable);
+OFLITE_API void OfLiteExecutableDestory(OfLiteExecutable* executable) {
+  OfLiteNativeExecutable* native_executable =
+      reinterpret_cast<OfLiteNativeExecutable*>(executable);
   free(native_executable->buf);
 }
 
