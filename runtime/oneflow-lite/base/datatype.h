@@ -16,7 +16,7 @@ limitations under the License.
 #ifndef ONEFLOW_LITE_BASE_DATATYPE_H_
 #define ONEFLOW_LITE_BASE_DATATYPE_H_
 
-#include <cstdlib>
+#include <stdlib.h>
 
 #include "oneflow-lite/base/common.h"
 
@@ -78,6 +78,8 @@ inline size_t OfLiteDataTypeByteSize(OfLiteDataType dtype) {
       return 0;
   }
 }
+
+OFLITE_API OfLiteDataType OfLiteDataTypeConvertFromString(const char* dtype);
 
 #ifdef __cplusplus
 }  // extern "C"

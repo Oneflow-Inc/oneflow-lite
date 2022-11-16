@@ -15,24 +15,204 @@ limitations under the License.
 */
 #include "oneflow-lite/core/execution_context.h"
 
-typedef struct OfLiteExecutionContext {
-  OfLiteTensorSpan operands;
-  OfLiteTensorSpan inputs;
-  OfLiteTensorSpan outputs;
+#include "oneflow-lite/base/memory.h"
+#include "oneflow-lite/core/operator.h"
+#include "oneflow-lite/schemas/executable_generated.h"
 
+typedef struct OfLiteDeviceContext {
+  OfLiteDevice* device;
+  OfLiteAllocator* device_alloca;
+  OfLiteAllocator* device_host_alloca;
+} OfLiteDeviceContext;
+
+typedef struct OfLiteExecutionUnit {
+  OfLiteOperator* op;
+  OfLiteTensorSpan* inputs;
+  OfLiteTensorSpan* outputs;
+
+  // The following members are borrowed from execution context
+  OfLiteAllocator* host_alloca;
+  OfLiteDeviceContext* device_context;
+} OfLiteExecutionUnit;
+
+typedef struct OfLiteExecutionContext {
+  OfLiteAllocator* host_alloca;
+  OfLiteDeviceContext** device_contexts;
+  size_t device_context_size;
+
+  OfLiteBuffer** buffer_segments;
+  size_t buffer_segment_size;
+
+  OfLiteTensor** operands;
+  size_t operand_size;
+  OfLiteTensorSpan* inputs;
+  OfLiteTensorSpan* outputs;
+
+  OfLiteExecutionUnit** execution_units;
+  size_t execution_unit_size;
 } OfLiteExecutionContext;
+
+static void OfLiteDeviceContextCreate(OfLiteStringRef device_type,
+                                      size_t ordinal,
+                                      OfLiteDeviceContext** context) {
+  *context = reinterpret_cast<OfLiteDeviceContext*>(
+      OfLiteMalloc(sizeof(OfLiteDeviceContext)));
+  OfLiteDevice* device = nullptr;
+  OfLiteAllocator* device_alloca = nullptr;
+  OfLiteAllocator* device_host_alloca = nullptr;
+  OfLiteDeviceCreate(device_type, ordinal, &device);
+  OfLiteAllocatorCreate(device, OfLiteAllocatorType_Device, &device_alloca);
+  // OfLiteAllocatorCreate(device, OfLiteAllocatorType_Device_Host,
+  // &device_host_alloca);
+  (*context)->device = device;
+  (*context)->device_alloca = device_alloca;
+  (*context)->device_host_alloca = device_host_alloca;
+}
+
+static void OfLiteDeviceContextDestory(OfLiteDeviceContext* context) {
+  OfLiteAllocatorDestory(context->device_host_alloca);
+  OfLiteAllocatorDestory(context->device_alloca);
+  OfLiteDeviceDestory(context->device);
+  OfLiteFree(context);
+}
+
+static void OfLiteExecutionUnitCreate(const OfLiteOpDef* def,
+                                      const OfLiteTensor** operands,
+                                      size_t operand_size,
+                                      OfLiteAllocator* host_alloca,
+                                      OfLiteDeviceContext* device_context,
+                                      OfLiteExecutionUnit** execution_unit) {
+  *execution_unit = reinterpret_cast<OfLiteExecutionUnit*>(
+      OfLiteMalloc(sizeof(OfLiteExecutionUnit)));
+  oneflow_lite_OpDef_table_t flatcc_def =
+      reinterpret_cast<oneflow_lite_OpDef_table_t>(def);
+}
+
+static void OfLiteExecutionUnitDestory(OfLiteExecutionUnit* execution_unit) {
+  OfLiteOperatorDestory(execution_unit->op);
+  OfLiteTensorSpanDestory(execution_unit->inputs);
+  OfLiteTensorSpanDestory(execution_unit->outputs);
+  OfLiteFree(execution_unit);
+}
+
+static void OfLiteTensorDescCreateFromTensorDef(const OfLiteTensorDef* tensor,
+                                                OfLiteTensorDesc* desc) {
+  oneflow_lite_TensorDef_table_t flatcc_tensor =
+      reinterpret_cast<oneflow_lite_TensorDef_table_t>(tensor);
+  flatbuffers_int64_vec_t sizes = oneflow_lite_TensorDef_sizes(flatcc_tensor);
+  desc->dims.ndim = flatbuffers_int64_vec_len(sizes);
+  if (!OfLiteDimsCheck(desc->dims)) {
+    // TODO(): Tensor sizes is too large, only supports up to 10D array
+  }
+  for (size_t i = 0; i < desc->dims.ndim; ++i) {
+    desc->dims.sizes[i] = flatbuffers_int64_vec_at(sizes, i);
+  }
+  desc->dtype = OfLiteDataTypeConvertFromString(
+      oneflow_lite_TensorDef_type(flatcc_tensor));
+  desc->layout = OfLiteLayoutConvertFromString(
+      oneflow_lite_TensorDef_layout(flatcc_tensor));
+}
+
+static void OfLiteExecutionContextCreateImpl(
+    const OfLiteExecutable* executable, const OfLiteExecutionOption& option,
+    OfLiteExecutionContext* context) {
+  size_t device_size = 0;
+  OfLiteExecutableDeviceSize(executable, &device_size);
+  context->device_contexts = reinterpret_cast<OfLiteDeviceContext**>(
+      OfLiteMalloc(device_size * sizeof(OfLiteDeviceContext*)));
+  for (size_t i = 0; i < device_size; ++i) {
+    OfLiteStringRef device;
+    OfLiteStringRef device_type;
+    size_t ordinal = 0;
+    OfLiteExecutableDevice(executable, i, &device);
+    // OfLiteParseDeviceAndOrdinal(device, &device_type, &ordinal);
+    OfLiteDeviceContextCreate(device_type, ordinal,
+                              context->device_contexts + i);
+  }
+  context->device_context_size = device_size;
+
+  size_t buffer_segment_size = 0;
+  OfLiteExecutableBufferSegmentSize(executable, &buffer_segment_size);
+  context->buffer_segments = reinterpret_cast<OfLiteBuffer**>(
+      OfLiteMalloc(buffer_segment_size * sizeof(OfLiteBuffer*)));
+  for (size_t i = 0; i < buffer_segment_size; ++i) {
+    const OfLiteBufferSegmentDef* segment = nullptr;
+    OfLiteExecutableBufferSegment(executable, i, &segment);
+    oneflow_lite_BufferSegmentDef_table_t flatcc_segment =
+        reinterpret_cast<oneflow_lite_BufferSegmentDef_table_t>(segment);
+    size_t size = oneflow_lite_BufferSegmentDef_size(flatcc_segment);
+    int32_t device = oneflow_lite_BufferSegmentDef_device(flatcc_segment);
+    // int32_t alignment =
+    // oneflow_lite_BufferSegmentDef_alignment(flatcc_segment);
+    if (device >= context->device_context_size) {
+      // TODO(): Buffer segment device id should less than device size
+    }
+    OfLiteBufferCreate(context->device_contexts[i]->device_alloca, size,
+                       context->buffer_segments + i);
+  }
+  context->buffer_segment_size = buffer_segment_size;
+
+  size_t operand_size = 0;
+  OfLiteExecutableOperandSize(executable, &operand_size);
+  context->operands = reinterpret_cast<OfLiteTensor**>(
+      OfLiteMalloc(operand_size * sizeof(OfLiteTensor*)));
+  for (size_t i = 0; i < operand_size; ++i) {
+    const OfLiteTensorDef* tensor = nullptr;
+    OfLiteExecutableOperand(executable, i, &tensor);
+    OfLiteTensorDesc desc;
+    OfLiteTensorDescCreateFromTensorDef(tensor, &desc);
+    oneflow_lite_TensorDef_table_t flatcc_tensor =
+        reinterpret_cast<oneflow_lite_TensorDef_table_t>(tensor);
+    int32_t segment_id = oneflow_lite_TensorDef_segment_id(flatcc_tensor);
+    int64_t segment_offset =
+        oneflow_lite_TensorDef_segment_offset(flatcc_tensor);
+    if (segment_id >= context->buffer_segment_size) {
+      // TODO(): Tensor segment id should less than buffer segment size
+    }
+    OfLiteTensorCreateFromBuffer(desc, context->buffer_segments[segment_id],
+                                 segment_offset, &(context->operands[i]));
+  }
+
+  size_t input_size = 0;
+  OfLiteExecutableInputSize(executable, &input_size);
+  OfLiteTensorSpanCreate(input_size, &context->inputs);
+
+  size_t output_size = 0;
+  OfLiteExecutableOutputSize(executable, &output_size);
+  OfLiteTensorSpanCreate(output_size, &context->outputs);
+}
 
 OFLITE_API void OfLiteExecutionContextCreate(
     const OfLiteExecutable* executable, const OfLiteExecutionOption& option,
-    OfLiteExecutionContext** context) {}
+    OfLiteExecutionContext** context) {
+  *context = reinterpret_cast<OfLiteExecutionContext*>(
+      OfLiteMalloc(sizeof(OfLiteExecutionContext)));
+  OfLiteExecutionContextCreateImpl(executable, option, *context);
+}
 
 OFLITE_API void OfLiteExecutionContextDestory(OfLiteExecutionContext* context) {
+  for (size_t i = 0; i < context->execution_unit_size; ++i) {
+    OfLiteExecutionUnitDestory(context->execution_units[i]);
+  }
+  OfLiteFree(context->execution_units);
+
+  OfLiteTensorSpanDestory(context->inputs);
+  OfLiteTensorSpanDestory(context->outputs);
+
+  for (size_t i = 0; i < context->device_context_size; ++i) {
+    OfLiteDeviceContextDestory(context->device_contexts[i]);
+  }
+  OfLiteFree(context->device_contexts);
 }
 
 OFLITE_API void OfLiteExecutionContextInputs(
-    const OfLiteExecutionContext* context, OfLiteTensorSpan* inputs) {}
+    const OfLiteExecutionContext* context, const OfLiteTensorSpan** inputs) {
+  *inputs = context->inputs;
+}
 
 OFLITE_API void OfLiteExecutionContextOutputs(
-    const OfLiteExecutionContext* context, OfLiteTensorSpan* outputs) {}
+    const OfLiteExecutionContext* context, const OfLiteTensorSpan** outputs) {
+  *outputs = context->outputs;
+}
 
 OFLITE_API void OfLiteExecutionContextInvoke(OfLiteExecutionContext* context) {}

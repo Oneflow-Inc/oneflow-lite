@@ -54,13 +54,19 @@ OFLITE_API void OfLiteAllocatorDestory(OfLiteAllocator* alloca) {
 }
 
 OFLITE_API void OfLiteAllocatorMalloc(OfLiteAllocator* alloca, size_t size,
-                                      size_t alignment, void** ptr) {
-  reinterpret_cast<OfLiteAllocatorVTable*>(alloca)->malloc(alloca, size,
-                                                           alignment, ptr);
+                                      void** ptr) {
+  reinterpret_cast<OfLiteAllocatorVTable*>(alloca)->malloc(alloca, size, ptr);
 }
 
 OFLITE_API void OfLiteAllocatorFree(OfLiteAllocator* alloca, void* ptr) {
   reinterpret_cast<OfLiteAllocatorVTable*>(alloca)->free(alloca, ptr);
+}
+
+OFLITE_API void OfLiteAllocatorAlignedAlloc(OfLiteAllocator* alloca,
+                                            size_t alignment, size_t size,
+                                            void** ptr) {
+  reinterpret_cast<OfLiteAllocatorVTable*>(alloca)->aligned_alloc(
+      alloca, alignment, size, ptr);
 }
 
 OFLITE_API void OfLiteAllocatorRegisterFactory(OfLiteDeviceId device,

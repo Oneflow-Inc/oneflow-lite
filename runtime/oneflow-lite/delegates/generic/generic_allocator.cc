@@ -26,7 +26,7 @@ static void OfLiteGenericAllocatorDestory(OfLiteAllocator* alloca) {
 }
 
 static void OfLiteGenericAllocatorMalloc(OfLiteAllocator* alloca, size_t size,
-                                         size_t alignment, void** ptr) {
+                                         void** ptr) {
   OfLiteDevice* device =
       reinterpret_cast<OfLiteGenericAllocator*>(alloca)->device;
   OfLiteDeviceMalloc(device, size, ptr);
@@ -41,6 +41,7 @@ static void OfLiteGenericAllocatorFree(OfLiteAllocator* alloca, void* ptr) {
 static OfLiteAllocatorVTable vtable = {
     .destory = OfLiteGenericAllocatorDestory,
     .malloc = OfLiteGenericAllocatorMalloc,
+    .aligned_alloc = 0,
     .free = OfLiteGenericAllocatorFree,
 };
 

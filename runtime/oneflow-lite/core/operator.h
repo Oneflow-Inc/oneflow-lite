@@ -28,13 +28,13 @@ typedef struct OfLiteOpDef OfLiteOpDef;
 void OfLiteOperatorCreate(const OfLiteOpDef* def, OfLiteOperator** op);
 void OfLiteOperatorDestory(OfLiteOperator* op);
 
-void OfLiteOperatorCompute(OfLiteOperator* op, OfLiteTensorSpan inputs,
-                           OfLiteTensorSpan outputs);
+void OfLiteOperatorCompute(OfLiteOperator* op, const OfLiteTensorSpan& inputs,
+                           const OfLiteTensorSpan& outputs);
 
 typedef struct OfLiteOperatorVTable {
   void (*destory)(OfLiteOperator* op);
-  void (*compute)(OfLiteOperator* op, OfLiteTensorSpan inputs,
-                  OfLiteTensorSpan outputs);
+  void (*compute)(OfLiteOperator* op, const OfLiteTensorSpan& inputs,
+                  const OfLiteTensorSpan& outputs);
 } OfLiteOperatorVTable;
 
 #ifdef __cplusplus

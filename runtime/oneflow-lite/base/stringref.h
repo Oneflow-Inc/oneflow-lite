@@ -16,8 +16,8 @@ limitations under the License.
 #ifndef ONEFLOW_LITE_BASE_STRING_REF_H_
 #define ONEFLOW_LITE_BASE_STRING_REF_H_
 
-#include <cstddef>
-#include <cstring>
+#include <stddef.h>
+#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,7 +29,8 @@ typedef struct OfLiteStringRef {
 } OfLiteStringRef;
 
 inline OfLiteStringRef OfLiteMakeStringRef(const char* str) {
-  return OfLiteStringRef{str, strlen(str)};
+  OfLiteStringRef strref = {str, strlen(str)};
+  return strref;
 }
 
 #ifdef __cplusplus

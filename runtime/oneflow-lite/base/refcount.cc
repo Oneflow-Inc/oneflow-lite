@@ -13,25 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef ONEFLOW_LITE_BASE_LAYOUT_H_
-#define ONEFLOW_LITE_BASE_LAYOUT_H_
+#include "oneflow-lite/base/refcount.h"
 
-#include "oneflow-lite/base/common.h"
+void OfLiteRefCountInitialize(OfLiteRefCount* ref, size_t value) {
+  ref->refcount = value;
+}
+void OfLiteRefCountIncrease(OfLiteRefCount* ref) { ++ref->refcount; }
+void OfLiteRefCountDecrease(OfLiteRefCount* ref) { --ref->refcount; }
 
-#ifdef __cplusplus
-extern "C" {
-#endif  // __cplusplus
-
-enum OfLiteLayout {
-  OfLiteLayout_NCHW = 0,
-  OfLiteLayout_NHWC,
-  OfLiteLayout_UNK,
-};
-
-OFLITE_API OfLiteLayout OfLiteLayoutConvertFromString(const char* layout);
-
-#ifdef __cplusplus
-}  // extern "C"
-#endif  // __cplusplus
-
-#endif  // ONEFLOW_LITE_BASE_LAYOUT_H_
+bool OfLiteRefCountEqual(const OfLiteRefCount& ref, size_t value) {
+  return ref.refcount == value;
+}

@@ -21,6 +21,7 @@ limitations under the License.
 #include "oneflow-lite/base/dims.h"
 #include "oneflow-lite/base/layout.h"
 #include "oneflow-lite/core/allocator.h"
+#include "oneflow-lite/core/buffer.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,18 +33,24 @@ typedef struct OfLiteTensorDesc {
   OfLiteDims dims;
   OfLiteDataType dtype;
   OfLiteLayout layout;
-  size_t alignment;
 } OfLiteTensorDesc;
 
 typedef struct OfLiteTensorSpan {
-  OfLiteTensor** vals;
+  OfLiteTensor** items;
   size_t size;
 } OfLiteTensorSpan;
 
 OFLITE_API void OfLiteTensorCreate(const OfLiteTensorDesc& desc,
                                    OfLiteAllocator* alloca,
-                                   const OfLiteTensor** tensor);
+                                   OfLiteTensor** tensor);
+
+OFLITE_API void OfLiteTensorCreateFromBuffer(const OfLiteTensorDesc& desc,
+                                             OfLiteBuffer* buffer,
+                                             size_t offset,
+                                             OfLiteTensor** tensor);
+
 OFLITE_API void OfLiteTensorDestory(OfLiteTensor* tensor);
+
 OFLITE_API void OfLiteTensorDims(const OfLiteTensor* tensor, OfLiteDims* dims);
 OFLITE_API void OfLiteTensorDataType(const OfLiteTensor* tensor,
                                      OfLiteDataType* dtype);
@@ -52,12 +59,13 @@ OFLITE_API void OfLiteTensorLayout(const OfLiteTensor* tensor,
 OFLITE_API void OfLiteTensorAllocator(const OfLiteTensor* tensor,
                                       const OfLiteAllocator** alloca);
 
-OFLITE_API void OfLiteTensorStorage(const OfLiteTensor* tensor,
-                                    const void** storage);
+OFLITE_API void OfLiteTensorResize(OfLiteTensor* tensor,
+                                   const OfLiteDims& dims);
 
-OFLITE_API size_t OfLiteTensorSpanSize(const OfLiteTensorSpan& span);
-OFLITE_API void OfLiteTensorSpanAt(const OfLiteTensorSpan& span, size_t index,
-                                   const OfLiteTensor** tensor);
+OFLITE_API void* OfLiteTensorData(const OfLiteTensor* tensor);
+
+OFLITE_API void OfLiteTensorSpanCreate(size_t size, OfLiteTensorSpan** span);
+OFLITE_API void OfLiteTensorSpanDestory(OfLiteTensorSpan* span);
 
 #ifdef __cplusplus
 }  // extern "C"

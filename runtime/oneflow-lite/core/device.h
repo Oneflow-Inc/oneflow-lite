@@ -16,8 +16,8 @@ limitations under the License.
 #ifndef ONEFLOW_LITE_CORE_DEVICE_H_
 #define ONEFLOW_LITE_CORE_DEVICE_H_
 
-#include <cstdint>
-#include <cstdlib>
+#include <stdint.h>
+#include <stdlib.h>
 
 #include "oneflow-lite/base/common.h"
 #include "oneflow-lite/base/stringref.h"

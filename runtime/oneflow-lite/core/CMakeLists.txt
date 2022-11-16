@@ -1,5 +1,6 @@
 file(GLOB_RECURSE OFLITE_RUNTIME_CORE_SRCS
     allocator.cc
+    buffer.cc
     device.cc
     event.cc
     executable.cc

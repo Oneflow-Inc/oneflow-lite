@@ -45,6 +45,8 @@ OFLITE_API void OfLiteExecutableOutputSize(const OfLiteExecutable* executable,
 OFLITE_API void OfLiteExecutableInput(const OfLiteExecutable* executable,
                                       size_t index,
                                       const OfLiteTensorDef** input);
+OFLITE_API void OfLiteExecutableInputId(const OfLiteExecutable* executable,
+                                        size_t index, size_t* input_id);
 OFLITE_API void OfLiteExecutableInputName(const OfLiteExecutable* executable,
                                           size_t index,
                                           OfLiteStringRef* input_name);
@@ -52,6 +54,8 @@ OFLITE_API void OfLiteExecutableInputName(const OfLiteExecutable* executable,
 OFLITE_API void OfLiteExecutableOutput(const OfLiteExecutable* executable,
                                        size_t index,
                                        const OfLiteTensorDef** output);
+OFLITE_API void OfLiteExecutableOutputId(const OfLiteExecutable* executable,
+                                         size_t index, size_t* output_id);
 OFLITE_API void OfLiteExecutableOutputName(const OfLiteExecutable* executable,
                                            size_t index,
                                            OfLiteStringRef* output_name);

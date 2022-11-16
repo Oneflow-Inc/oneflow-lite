@@ -17,6 +17,7 @@ limitations under the License.
 
 #include <stdio.h>
 
+#include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/schemas/executable_generated.h"
 
 typedef struct OfLiteNativeExecutable {
@@ -39,7 +40,7 @@ OFLITE_API void OfLiteExecutableCreate(OfLiteExecutable** executable,
     // TODO()
   }
   uint8_t* buf = reinterpret_cast<uint8_t*>(
-      malloc(sizeof(OfLiteNativeExecutable) + buf_length + 1));
+      OfLiteMalloc(sizeof(OfLiteNativeExecutable) + buf_length + 1));
   if (fread(buf, buf_length, 1, file) != 1) {
     // TODO()
   }
@@ -61,7 +62,7 @@ OFLITE_API void OfLiteExecutableCreate(OfLiteExecutable** executable,
 OFLITE_API void OfLiteExecutableDestory(OfLiteExecutable* executable) {
   OfLiteNativeExecutable* native_executable =
       reinterpret_cast<OfLiteNativeExecutable*>(executable);
-  free(native_executable->buf);
+  OfLiteFree(native_executable->buf);
 }
 
 OFLITE_API void OfLiteExecutableName(const OfLiteExecutable* executable,
@@ -77,18 +78,18 @@ OFLITE_API void OfLiteExecutableInputSize(const OfLiteExecutable* executable,
                                           size_t* size) {
   const OfLiteNativeExecutable* native_executable =
       reinterpret_cast<const OfLiteNativeExecutable*>(executable);
-  oneflow_lite_TensorDef_vec_t inputs =
+  flatbuffers_int32_vec_t inputs =
       oneflow_lite_ExecutableDef_inputs(native_executable->def);
-  *size = oneflow_lite_TensorDef_vec_len(inputs);
+  *size = flatbuffers_int32_vec_len(inputs);
 }
 
 OFLITE_API void OfLiteExecutableOutputSize(const OfLiteExecutable* executable,
                                            size_t* size) {
   const OfLiteNativeExecutable* native_executable =
       reinterpret_cast<const OfLiteNativeExecutable*>(executable);
-  oneflow_lite_TensorDef_vec_t outputs =
+  flatbuffers_int32_vec_t outputs =
       oneflow_lite_ExecutableDef_outputs(native_executable->def);
-  *size = oneflow_lite_TensorDef_vec_len(outputs);
+  *size = flatbuffers_int32_vec_len(outputs);
 }
 
 OFLITE_API void OfLiteExecutableInput(const OfLiteExecutable* executable,
@@ -96,14 +97,25 @@ OFLITE_API void OfLiteExecutableInput(const OfLiteExecutable* executable,
                                       const OfLiteTensorDef** input) {
   const OfLiteNativeExecutable* native_executable =
       reinterpret_cast<const OfLiteNativeExecutable*>(executable);
-  oneflow_lite_TensorDef_vec_t inputs =
+  flatbuffers_int32_vec_t inputs =
       oneflow_lite_ExecutableDef_inputs(native_executable->def);
-  if (index >= oneflow_lite_TensorDef_vec_len(inputs)) {
+  if (index >= flatbuffers_int32_vec_len(inputs)) {
     // TODO()
   }
-  oneflow_lite_TensorDef_table_t flatc_input =
-      oneflow_lite_TensorDef_vec_at(inputs, index);
-  *input = reinterpret_cast<const OfLiteTensorDef*>(flatc_input);
+  OfLiteExecutableOperand(executable, flatbuffers_int32_vec_at(inputs, index),
+                          input);
+}
+
+OFLITE_API void OfLiteExecutableOutputId(const OfLiteExecutable* executable,
+                                         size_t index, size_t* output_id) {
+  const OfLiteNativeExecutable* native_executable =
+      reinterpret_cast<const OfLiteNativeExecutable*>(executable);
+  flatbuffers_int32_vec_t outputs =
+      oneflow_lite_ExecutableDef_outputs(native_executable->def);
+  if (index >= flatbuffers_int32_vec_len(outputs)) {
+    // TODO()
+  }
+  *output_id = flatbuffers_int32_vec_at(outputs, index);
 }
 
 OFLITE_API void OfLiteExecutableInputName(const OfLiteExecutable* executable,
@@ -126,11 +138,13 @@ OFLITE_API void OfLiteExecutableOutput(const OfLiteExecutable* executable,
                                        const OfLiteTensorDef** output) {
   const OfLiteNativeExecutable* native_executable =
       reinterpret_cast<const OfLiteNativeExecutable*>(executable);
-  oneflow_lite_TensorDef_vec_t outputs =
+  flatbuffers_int32_vec_t outputs =
       oneflow_lite_ExecutableDef_outputs(native_executable->def);
-  oneflow_lite_TensorDef_table_t flatc_output =
-      oneflow_lite_TensorDef_vec_at(outputs, index);
-  *output = reinterpret_cast<const OfLiteTensorDef*>(flatc_output);
+  if (index >= flatbuffers_int32_vec_len(outputs)) {
+    // TODO()
+  }
+  OfLiteExecutableOperand(executable, flatbuffers_int32_vec_at(outputs, index),
+                          output);
 }
 
 OFLITE_API void OfLiteExecutableOutputName(const OfLiteExecutable* executable,

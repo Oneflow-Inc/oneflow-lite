@@ -13,25 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef ONEFLOW_LITE_BASE_LAYOUT_H_
-#define ONEFLOW_LITE_BASE_LAYOUT_H_
+#include "oneflow-lite/base/layout.h"
 
-#include "oneflow-lite/base/common.h"
+#include <string.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif  // __cplusplus
-
-enum OfLiteLayout {
-  OfLiteLayout_NCHW = 0,
-  OfLiteLayout_NHWC,
-  OfLiteLayout_UNK,
-};
-
-OFLITE_API OfLiteLayout OfLiteLayoutConvertFromString(const char* layout);
-
-#ifdef __cplusplus
-}  // extern "C"
-#endif  // __cplusplus
-
-#endif  // ONEFLOW_LITE_BASE_LAYOUT_H_
+OFLITE_API OfLiteLayout OfLiteLayoutConvertFromString(const char* layout) {
+  if (0 == strcmp(layout, "nchw")) {
+    return OfLiteLayout_NCHW;
+  } else if (0 == strcmp(layout, "nhwc")) {
+    return OfLiteLayout_NHWC;
+  } else {
+    return OfLiteLayout_UNK;
+  }
+}

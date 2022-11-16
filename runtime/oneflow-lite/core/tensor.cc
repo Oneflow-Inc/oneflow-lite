@@ -15,63 +15,83 @@ limitations under the License.
 */
 #include "oneflow-lite/core/tensor.h"
 
-#include <cstring>
+#include <string.h>
 
-typedef struct OfLiteTensorImpl {
+#include "oneflow-lite/base/memory.h"
+
+typedef struct OfLiteTensor {
   OfLiteTensorDesc desc;
-  OfLiteAllocator* alloca;
-  void* storage;
-} OfLiteTensorImpl;
+  OfLiteBuffer* buffer;
+  size_t buffer_offset;
+} OfLiteTensor;
 
 OFLITE_API void OfLiteTensorCreate(const OfLiteTensorDesc& desc,
                                    OfLiteAllocator* alloca,
-                                   const OfLiteTensor** tensor) {
+                                   OfLiteTensor** tensor) {
   size_t size = OfLiteDimsCount(desc.dims) * OfLiteDataTypeByteSize(desc.dtype);
-  OfLiteTensorImpl* tensor_impl = new OfLiteTensorImpl;
+  OfLiteTensor* tensor_impl =
+      reinterpret_cast<OfLiteTensor*>(OfLiteMalloc(sizeof(OfLiteTensor)));
   memcpy(&tensor_impl->desc, &desc, sizeof(desc));
-  tensor_impl->alloca = alloca;
-  OfLiteAllocatorMalloc(alloca, size, desc.alignment, &tensor_impl->storage);
+  OfLiteBufferCreate(alloca, size, &tensor_impl->buffer);
+  tensor_impl->buffer_offset = 0;
+  *tensor = reinterpret_cast<OfLiteTensor*>(tensor_impl);
+}
+
+OFLITE_API void OfLiteTensorCreateFromBuffer(const OfLiteTensorDesc& desc,
+                                             OfLiteBuffer* buffer,
+                                             size_t offset,
+                                             OfLiteTensor** tensor) {
+  size_t size = OfLiteDimsCount(desc.dims) * OfLiteDataTypeByteSize(desc.dtype);
+  if (OfLiteBufferByteSize(buffer) < size + offset) {
+    // TODO
+    return;
+  }
+  OfLiteTensor* tensor_impl =
+      reinterpret_cast<OfLiteTensor*>(OfLiteMalloc(sizeof(OfLiteTensor)));
+  OfLiteBufferRetain(buffer);
+  tensor_impl->buffer = buffer;
+  tensor_impl->buffer_offset = offset;
   *tensor = reinterpret_cast<OfLiteTensor*>(tensor_impl);
 }
 
 OFLITE_API void OfLiteTensorDestory(OfLiteTensor* tensor) {
-  OfLiteTensorImpl* tensor_impl = reinterpret_cast<OfLiteTensorImpl*>(tensor);
-  OfLiteAllocatorFree(tensor_impl->alloca, tensor_impl->storage);
-  delete tensor_impl;
+  OfLiteTensor* tensor_impl = reinterpret_cast<OfLiteTensor*>(tensor);
+  OfLiteBufferDestory(tensor_impl->buffer);
+  OfLiteFree(tensor_impl);
 }
 
 OFLITE_API void OfLiteTensorDims(const OfLiteTensor* tensor, OfLiteDims* dims) {
-  memcpy(dims, &reinterpret_cast<const OfLiteTensorImpl*>(tensor)->desc.dims,
-         sizeof(OfLiteDims));
+  memcpy(dims, &tensor->desc.dims, sizeof(OfLiteDims));
 }
 
 OFLITE_API void OfLiteTensorDataType(const OfLiteTensor* tensor,
                                      OfLiteDataType* dtype) {
-  *dtype = reinterpret_cast<const OfLiteTensorImpl*>(tensor)->desc.dtype;
+  *dtype = tensor->desc.dtype;
 }
 
 OFLITE_API void OfLiteTensorLayout(const OfLiteTensor* tensor,
                                    OfLiteLayout* layout) {
-  *layout = reinterpret_cast<const OfLiteTensorImpl*>(tensor)->desc.layout;
+  *layout = tensor->desc.layout;
 }
 
 OFLITE_API void OfLiteTensorAllocator(const OfLiteTensor* tensor,
                                       const OfLiteAllocator** alloca) {
-  *alloca = reinterpret_cast<const OfLiteTensorImpl*>(tensor)->alloca;
+  OfLiteBufferAllocator(tensor->buffer, alloca);
 }
 
-OFLITE_API void OfLiteTensorStorage(const OfLiteTensor* tensor,
-                                    const void** storage) {
-  *storage = reinterpret_cast<const OfLiteTensorImpl*>(tensor)->storage;
+OFLITE_API void* OfLiteTensorData(const OfLiteTensor* tensor) {
+  return OfLiteBufferBytes(tensor->buffer) + tensor->buffer_offset;
 }
 
-OFLITE_API size_t OfLiteTensorSpanSize(const OfLiteTensorSpan& span) {
-  return span.size;
+OFLITE_API void OfLiteTensorSpanCreate(size_t size, OfLiteTensorSpan** span) {
+  *span = reinterpret_cast<OfLiteTensorSpan*>(
+      OfLiteMalloc(sizeof(OfLiteTensorSpan)));
+  (*span)->items = reinterpret_cast<OfLiteTensor**>(
+      OfLiteMalloc(size * sizeof(OfLiteTensor*)));
+  (*span)->size = size;
 }
-OFLITE_API void OfLiteTensorSpanAt(const OfLiteTensorSpan& span, size_t index,
-                                   const OfLiteTensor** tensor) {
-  if (index >= span.size) {
-    // TODO
-  }
-  *tensor = span.vals[index];
+
+OFLITE_API void OfLiteTensorSpanDestory(OfLiteTensorSpan* span) {
+  OfLiteFree(span->items);
+  OfLiteFree(span);
 }

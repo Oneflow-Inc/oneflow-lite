@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/base/stringref.h"
 #include "oneflow-lite/core/device.h"
 
@@ -46,10 +47,10 @@ void OfLiteX86DeviceCreateEvent(OfLiteDevice* device, OfLiteEvent** event) {}
 void OfLiteX86DeviceCreateStream(OfLiteDevice* device, OfLiteStream** stream) {}
 
 void OfLiteX86DeviceMalloc(OfLiteDevice* device, size_t size, void** ptr) {
-  *ptr = malloc(size);
+  *ptr = OfLiteMalloc(size);
 }
 
-void OfLiteX86DeviceFree(OfLiteDevice* device, void* ptr) { free(ptr); }
+void OfLiteX86DeviceFree(OfLiteDevice* device, void* ptr) { OfLiteFree(ptr); }
 
 void OfLiteX86DeviceMallocHost(OfLiteDevice* device, size_t size, void** ptr) {
   OfLiteX86DeviceMalloc(device, size, ptr);

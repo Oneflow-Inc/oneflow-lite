@@ -25,10 +25,12 @@ extern "C" {
 
 typedef struct OfLiteAllocator OfLiteAllocator;
 
-enum OfLiteAllocatorType {
+typedef enum OfLiteAllocatorType {
   OfLiteAllocatorType_Device,
-  OfLiteAllocatorType_Host,
-};
+
+  // Page-locked host memory and accessible to the device
+  OfLiteAllocatorType_Device_Host,
+} OfLiteAllocatorType;
 
 OFLITE_API void OfLiteAllocatorCreate(OfLiteDevice* device,
                                       OfLiteAllocatorType type,
@@ -36,13 +38,18 @@ OFLITE_API void OfLiteAllocatorCreate(OfLiteDevice* device,
 OFLITE_API void OfLiteAllocatorDestory(OfLiteAllocator* alloca);
 
 OFLITE_API void OfLiteAllocatorMalloc(OfLiteAllocator* alloca, size_t size,
-                                      size_t alignment, void** ptr);
+                                      void** ptr);
 OFLITE_API void OfLiteAllocatorFree(OfLiteAllocator* alloca, void* ptr);
+
+OFLITE_API void OfLiteAllocatorAlignedAlloc(OfLiteAllocator* alloca,
+                                            size_t alignment, size_t size,
+                                            void** ptr);
 
 typedef struct OfLiteAllocatorVTable {
   void (*destory)(OfLiteAllocator* alloca);
-  void (*malloc)(OfLiteAllocator* alloca, size_t size, size_t alignment,
-                 void** ptr);
+  void (*malloc)(OfLiteAllocator* alloca, size_t size, void** ptr);
+  void (*aligned_alloc)(OfLiteAllocator* alloca, size_t alignment, size_t size,
+                        void** ptr);
   void (*free)(OfLiteAllocator* alloca, void* ptr);
 } OfLiteAllocatorVTable;
 
@@ -53,7 +60,7 @@ OFLITE_API void OfLiteAllocatorRegisterFactory(OfLiteDeviceId device,
                                                OfLiteAllocatorFactory factory);
 
 #define OFLITE_REGISTER_ALLOCATOR(device, type, factory)          \
-  static int OFLITE_CAT(_oflite_allocator_rrgistry_, __COUNTER__) \
+  static int OFLITE_CAT(_oflite_allocator_registry_, __COUNTER__) \
       OFLITE_UNUSED = {                                           \
           ((void)OfLiteAllocatorRegisterFactory(device, type, factory), 0)};
 

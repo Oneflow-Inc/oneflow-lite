@@ -26,6 +26,7 @@ table TensorDef {
   // Type should be one of the primary data type
   // i8,i16,i32,i64,u8,u16,u32,u64,f8,f16,bf16,f32,f64,bool
   type:string;
+  layout:string;
   sizes:[long];
   strides:[long];
 
@@ -56,8 +57,8 @@ table OpFunctionDef {
   name:string;
   // Code generated for AOT codegen. 
   body:[byte];
-  // Signature of the function call. Signature can be empty to use the default
-  // function signature
+  // Signature of the function call. Signature can be empty to use the
+  // default function signature
   // "(t0, t1, ..., tN, r0, r1, ..., rM) -> (tN+1, tN+2, ..., tN+T)"
   // in which t means Tensor and r means op attributes
   signature:string;
@@ -84,15 +85,15 @@ table ExecutableDef {
   devices:[string];
   ops:[OpDef];
   operands:[TensorDef];
-  inputs:[TensorDef];
-  outputs:[TensorDef];
+  inputs:[int];
+  outputs:[int];
   input_names:[string];
   output_names:[string];
   segments:[BufferSegmentDef];
 
-  // Functions will be registered in the global function table and will be used
-  // firstly, even if those operators functions are available in the runtime
-  // library
+  // Functions will be registered in the global function table and will
+  // be used firstly, even if those operators functions are available
+  // in the runtime library
   functions:[OpFunctionDef];
 }
 

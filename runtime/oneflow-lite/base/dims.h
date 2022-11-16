@@ -16,7 +16,7 @@ limitations under the License.
 #ifndef ONEFLOW_LITE_BASE_DIMS_H_
 #define ONEFLOW_LITE_BASE_DIMS_H_
 
-#include <cstdlib>
+#include <stdlib.h>
 
 #include "oneflow-lite/base/common.h"
 
