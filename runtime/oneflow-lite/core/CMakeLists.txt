@@ -2,10 +2,12 @@ file(GLOB_RECURSE OFLITE_RUNTIME_CORE_SRCS
     allocator.cc
     buffer.cc
     device.cc
+    device_context.cc
     device_util.cc
     event.cc
     executable.cc
     execution_context.cc
+    execution_unit.cc
     operator.cc
     stream.cc
     tensor.cc
