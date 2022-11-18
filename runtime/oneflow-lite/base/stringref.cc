@@ -13,30 +13,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef ONEFLOW_LITE_BASE_STRING_REF_H_
-#define ONEFLOW_LITE_BASE_STRING_REF_H_
+#include "oneflow-lite/base/stringref.h"
 
-#include <stddef.h>
-#include <string.h>
-
-#include "oneflow-lite/base/common.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif  // __cplusplus
-
-typedef struct OfLiteStringRef {
-  const char* data;
-  size_t size;
-} OfLiteStringRef;
-
-OFLITE_API OfLiteStringRef OfLiteStringRefCreate(const char* str);
+OFLITE_API OfLiteStringRef OfLiteStringRefCreate(const char* str) {
+  OfLiteStringRef strref = {str, strlen(str)};
+  return strref;
+}
 
 OFLITE_API OfLiteStringRef OfLiteStringRefSubStr(OfLiteStringRef value,
-                                                 size_t pos, size_t len);
-
-#ifdef __cplusplus
-}  // extern "C"
-#endif  // __cplusplus
-
-#endif  // ONEFLOW_LITE_BASE_STRING_REF_H_
+                                                 size_t pos, size_t len) {
+  pos = OFLITE_MIN(pos, value.size);
+  len = OFLITE_MIN(len, value.size - pos);
+  OfLiteStringRef strref = {value.data + pos, len};
+  return strref;
+}

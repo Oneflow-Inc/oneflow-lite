@@ -93,8 +93,7 @@ OFLITE_API void OfLiteExecutableOutputSize(const OfLiteExecutable* executable,
 }
 
 OFLITE_API void OfLiteExecutableInput(const OfLiteExecutable* executable,
-                                      size_t index,
-                                      const OfLiteTensorDef** input) {
+                                      size_t index, size_t* input) {
   const OfLiteNativeExecutable* native_executable =
       reinterpret_cast<const OfLiteNativeExecutable*>(executable);
   flatbuffers_int32_vec_t inputs =
@@ -102,20 +101,7 @@ OFLITE_API void OfLiteExecutableInput(const OfLiteExecutable* executable,
   if (index >= flatbuffers_int32_vec_len(inputs)) {
     // TODO()
   }
-  OfLiteExecutableOperand(executable, flatbuffers_int32_vec_at(inputs, index),
-                          input);
-}
-
-OFLITE_API void OfLiteExecutableOutputId(const OfLiteExecutable* executable,
-                                         size_t index, size_t* output_id) {
-  const OfLiteNativeExecutable* native_executable =
-      reinterpret_cast<const OfLiteNativeExecutable*>(executable);
-  flatbuffers_int32_vec_t outputs =
-      oneflow_lite_ExecutableDef_outputs(native_executable->def);
-  if (index >= flatbuffers_int32_vec_len(outputs)) {
-    // TODO()
-  }
-  *output_id = flatbuffers_int32_vec_at(outputs, index);
+  *input = flatbuffers_int32_vec_at(inputs, index);
 }
 
 OFLITE_API void OfLiteExecutableInputName(const OfLiteExecutable* executable,
@@ -134,8 +120,7 @@ OFLITE_API void OfLiteExecutableInputName(const OfLiteExecutable* executable,
 }
 
 OFLITE_API void OfLiteExecutableOutput(const OfLiteExecutable* executable,
-                                       size_t index,
-                                       const OfLiteTensorDef** output) {
+                                       size_t index, size_t* output) {
   const OfLiteNativeExecutable* native_executable =
       reinterpret_cast<const OfLiteNativeExecutable*>(executable);
   flatbuffers_int32_vec_t outputs =
@@ -143,8 +128,7 @@ OFLITE_API void OfLiteExecutableOutput(const OfLiteExecutable* executable,
   if (index >= flatbuffers_int32_vec_len(outputs)) {
     // TODO()
   }
-  OfLiteExecutableOperand(executable, flatbuffers_int32_vec_at(outputs, index),
-                          output);
+  *output = flatbuffers_int32_vec_at(outputs, index);
 }
 
 OFLITE_API void OfLiteExecutableOutputName(const OfLiteExecutable* executable,

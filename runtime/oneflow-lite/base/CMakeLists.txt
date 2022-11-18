@@ -3,6 +3,7 @@ set(OFLITE_RUNTIME_BASE_SRCS
   dims.cc
   layout.cc
   refcount.cc
+  stringref.cc
 )
 add_library(oneflow-lite-runtime-base OBJECT ${OFLITE_RUNTIME_BASE_SRCS})
 add_dependencies(oneflow-lite-runtime-base schemas)

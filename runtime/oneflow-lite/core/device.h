@@ -82,11 +82,11 @@ typedef OfLiteDevice* (*OfLiteDeviceFactory)(size_t ordinal);
 OFLITE_API void OfLiteDeviceRegisterFactory(OfLiteStringRef type,
                                             OfLiteDeviceFactory factory);
 
-#define OFLITE_REGISTER_DEVICE(type, factory)                                 \
-  static int OFLITE_CAT(_oflite_device_rrgistry_,                             \
-                        __COUNTER__) OFLITE_UNUSED = {                        \
-      ((void)OfLiteDeviceRegisterFactory(OfLiteMakeStringRef(type), factory), \
-       0)};
+#define OFLITE_REGISTER_DEVICE(type, factory)                      \
+  static int OFLITE_CAT(_oflite_device_rrgistry_, __COUNTER__)     \
+      OFLITE_UNUSED = {((void)OfLiteDeviceRegisterFactory(         \
+                            OfLiteStringRefCreate(type), factory), \
+                        0)};
 
 #ifdef __cplusplus
 }  // extern "C"

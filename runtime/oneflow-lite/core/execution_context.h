@@ -41,6 +41,20 @@ OFLITE_API void OfLiteExecutionContextInputs(
 OFLITE_API void OfLiteExecutionContextOutputs(
     const OfLiteExecutionContext* context, const OfLiteTensorSpan** outputs);
 
+OFLITE_API void OfLiteExecutionContextInputSize(
+    const OfLiteExecutionContext* context, size_t* input_size);
+
+OFLITE_API void OfLiteExecutionContextOutputSize(
+    const OfLiteExecutionContext* context, size_t* output_size);
+
+OFLITE_API void OfLiteExecutionContextInput(
+    const OfLiteExecutionContext* context, size_t index,
+    const OfLiteTensor** input);
+
+OFLITE_API void OfLiteExecutionContextOutput(
+    const OfLiteExecutionContext* context, size_t index,
+    const OfLiteTensor** output);
+
 OFLITE_API void OfLiteExecutionContextInvoke(OfLiteExecutionContext* context);
 
 #ifdef __cplusplus

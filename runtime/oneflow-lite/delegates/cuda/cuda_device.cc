@@ -34,7 +34,7 @@ void OfLiteCUDADeviceQueryId(const OfLiteDevice* device, OfLiteDeviceId* id) {
 
 void OfLiteCUDADeviceQueryName(const OfLiteDevice* device,
                                OfLiteStringRef* name) {
-  *name = OfLiteMakeStringRef(OfLiteCUDADeviceName);
+  *name = OfLiteStringRefCreate(OfLiteCUDADeviceName);
 }
 
 void OfLiteCUDADeviceQueryOrdinal(const OfLiteDevice* device, size_t* ordinal) {

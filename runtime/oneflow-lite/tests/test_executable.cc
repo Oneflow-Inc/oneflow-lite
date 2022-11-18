@@ -2,7 +2,7 @@
 
 int main() {
   OfLiteExecutable* executable = NULL;
-  OfLiteExecutableCreate(&executable, OfLiteMakeStringRef("xxx"));
+  OfLiteExecutableCreate(&executable, OfLiteStringRefCreate("xxx"));
 
   OfLiteStringRef name;
   OfLiteExecutableName(executable, &name);
@@ -13,10 +13,10 @@ int main() {
   size_t output_size = 0;
   OfLiteExecutableOutputSize(executable, &output_size);
 
-  const OfLiteTensorDef* input = NULL;
+  size_t input = -1;
   OfLiteExecutableInput(executable, 0, &input);
 
-  const OfLiteTensorDef* output = NULL;
+  size_t output = -1;
   OfLiteExecutableOutput(executable, 0, &output);
 
   OfLiteStringRef input_name;

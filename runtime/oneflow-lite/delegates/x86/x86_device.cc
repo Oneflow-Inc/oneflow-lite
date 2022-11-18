@@ -35,7 +35,7 @@ void OfLiteX86DeviceQueryId(const OfLiteDevice* device, OfLiteDeviceId* id) {
 
 void OfLiteX86DeviceQueryName(const OfLiteDevice* device,
                               OfLiteStringRef* name) {
-  *name = OfLiteMakeStringRef(OfLiteX86DeviceName);
+  *name = OfLiteStringRefCreate(OfLiteX86DeviceName);
 }
 
 void OfLiteX86DeviceQueryOrdinal(const OfLiteDevice* device, size_t* ordinal) {

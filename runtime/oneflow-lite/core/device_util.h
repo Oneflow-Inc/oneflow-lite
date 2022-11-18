@@ -13,30 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef ONEFLOW_LITE_BASE_STRING_REF_H_
-#define ONEFLOW_LITE_BASE_STRING_REF_H_
-
-#include <stddef.h>
-#include <string.h>
+#ifndef ONEFLOW_LITE_CORE_DEVICE_UTIL_H_
+#define ONEFLOW_LITE_CORE_DEVICE_UTIL_H_
 
 #include "oneflow-lite/base/common.h"
+#include "oneflow-lite/base/stringref.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif  // __cplusplus
+void OfLiteParseDeviceTypeAndOrdinal(OfLiteStringRef device,
+                                     OfLiteStringRef* device_type,
+                                     size_t* ordinal);
 
-typedef struct OfLiteStringRef {
-  const char* data;
-  size_t size;
-} OfLiteStringRef;
-
-OFLITE_API OfLiteStringRef OfLiteStringRefCreate(const char* str);
-
-OFLITE_API OfLiteStringRef OfLiteStringRefSubStr(OfLiteStringRef value,
-                                                 size_t pos, size_t len);
-
-#ifdef __cplusplus
-}  // extern "C"
-#endif  // __cplusplus
-
-#endif  // ONEFLOW_LITE_BASE_STRING_REF_H_
+#endif  // ONEFLOW_LITE_CORE_DEVICE_UTIL_H_

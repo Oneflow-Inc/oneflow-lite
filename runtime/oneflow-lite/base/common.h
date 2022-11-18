@@ -39,4 +39,7 @@ limitations under the License.
 #define OFLITE_CAT(x, y) OFLITE_CAT_IMPL(x, y)
 #define OFLITE_CAT_IMPL(x, y) x##y
 
+#define OFLITE_MAX(x, y) ((x) > (y) ? (x) : (y))
+#define OFLITE_MIN(x, y) ((x) > (y) ? (y) : (x))
+
 #endif  // ONEFLOW_LITE_BASE_COMMON_H_
