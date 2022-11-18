@@ -24,6 +24,10 @@ extern "C" {
 
 inline void* OfLiteMalloc(size_t size) { return malloc(size); }
 
+inline void* OfLiteAlignedAlloc(size_t alignment, size_t size) {
+  return aligned_alloc(alignment, size);
+}
+
 inline void OfLiteFree(void* ptr) { free(ptr); }
 
 #ifdef __cplusplus

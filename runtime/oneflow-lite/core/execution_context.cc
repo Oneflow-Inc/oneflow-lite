@@ -61,6 +61,7 @@ static void OfLiteTensorDescCreateFromTensorDef(const OfLiteTensorDef* tensor,
 static void OfLiteExecutionContextCreateImpl(
     const OfLiteExecutable* executable, const OfLiteExecutionOption& option,
     OfLiteExecutionContext* context) {
+  OfLiteHostAllocatorCreate(&context->host_alloca);
   size_t device_size = 0;
   OfLiteExecutableDeviceSize(executable, &device_size);
   context->device_contexts = reinterpret_cast<OfLiteDeviceContext**>(
@@ -177,16 +178,6 @@ OFLITE_API void OfLiteExecutionContextDestory(OfLiteExecutionContext* context) {
     OfLiteDeviceContextDestory(context->device_contexts[i]);
   }
   OfLiteFree(context->device_contexts);
-}
-
-OFLITE_API void OfLiteExecutionContextInputs(
-    const OfLiteExecutionContext* context, const OfLiteTensorSpan** inputs) {
-  *inputs = context->inputs;
-}
-
-OFLITE_API void OfLiteExecutionContextOutputs(
-    const OfLiteExecutionContext* context, const OfLiteTensorSpan** outputs) {
-  *outputs = context->outputs;
 }
 
 OFLITE_API void OfLiteExecutionContextInputSize(

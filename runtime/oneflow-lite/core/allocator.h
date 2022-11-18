@@ -25,6 +25,8 @@ extern "C" {
 
 typedef struct OfLiteAllocator OfLiteAllocator;
 
+OFLITE_API void OfLiteHostAllocatorCreate(OfLiteAllocator** alloca);
+
 typedef enum OfLiteAllocatorType {
   OfLiteAllocatorType_Device,
 

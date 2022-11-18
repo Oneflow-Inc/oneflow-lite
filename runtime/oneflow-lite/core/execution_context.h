@@ -35,12 +35,6 @@ OFLITE_API void OfLiteExecutionContextCreate(
 
 OFLITE_API void OfLiteExecutionContextDestory(OfLiteExecutionContext* context);
 
-OFLITE_API void OfLiteExecutionContextInputs(
-    const OfLiteExecutionContext* context, const OfLiteTensorSpan** inputs);
-
-OFLITE_API void OfLiteExecutionContextOutputs(
-    const OfLiteExecutionContext* context, const OfLiteTensorSpan** outputs);
-
 OFLITE_API void OfLiteExecutionContextInputSize(
     const OfLiteExecutionContext* context, size_t* input_size);
 

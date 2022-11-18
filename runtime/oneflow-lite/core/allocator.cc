@@ -15,6 +15,44 @@ limitations under the License.
 */
 #include "oneflow-lite/core/allocator.h"
 
+#include "oneflow-lite/base/memory.h"
+
+typedef struct OfLiteHostAllocator {
+  OfLiteAllocatorVTable* vtable;
+} OfLiteHostAllocator;
+
+static void OfLiteHostAllocatorDestory(OfLiteAllocator* alloca) {
+  OfLiteFree(alloca);
+}
+
+static void OfLiteHostAllocatorMalloc(OfLiteAllocator* alloca, size_t size,
+                                      void** ptr) {
+  *ptr = OfLiteMalloc(size);
+}
+
+static void OfLiteHostAllocatorAlignedAlloc(OfLiteAllocator* alloca,
+                                            size_t alignment, size_t size,
+                                            void** ptr) {
+  *ptr = OfLiteAlignedAlloc(alignment, size);
+}
+
+static void OfLiteHostAllocatorFree(OfLiteAllocator* alloca, void* ptr) {
+  OfLiteFree(ptr);
+}
+
+OFLITE_API void OfLiteHostAllocatorCreate(OfLiteAllocator** alloca) {
+  static OfLiteAllocatorVTable vtable = {
+      .destory = OfLiteHostAllocatorDestory,
+      .malloc = OfLiteHostAllocatorMalloc,
+      .aligned_alloc = OfLiteHostAllocatorAlignedAlloc,
+      .free = OfLiteHostAllocatorFree,
+  };
+  OfLiteHostAllocator* host_alloca = reinterpret_cast<OfLiteHostAllocator*>(
+      OfLiteMalloc(sizeof(OfLiteHostAllocator)));
+  host_alloca->vtable = &vtable;
+  *alloca = reinterpret_cast<OfLiteAllocator*>(host_alloca);
+}
+
 static const size_t OFLITE_ALLOCATOR_COUNT_LIMIT = 64;
 
 typedef struct OfLiteAllocatorFactoryItem {
@@ -45,6 +83,10 @@ OFLITE_API void OfLiteAllocatorCreate(OfLiteDevice* device,
       *alloca = item.factory(device);
       return;
     }
+  }
+  // fallback to host allocator for device host memory allocation
+  if (type == OfLiteAllocatorType_Device_Host) {
+    OfLiteHostAllocatorCreate(alloca);
   }
   // TODO(): create allocator error
 }
