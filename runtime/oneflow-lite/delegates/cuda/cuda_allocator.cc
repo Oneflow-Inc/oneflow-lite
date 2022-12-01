@@ -16,7 +16,7 @@ limitations under the License.
 #include "oneflow-lite/core/allocator.h"
 #include "oneflow-lite/delegates/generic/generic_allocator.h"
 
-extern OfLiteDeviceId OfLiteCUDADeviceId;
+extern const OfLiteDeviceId OfLiteCUDADeviceId;
 
 static OfLiteAllocator* OfLiteCUDAAllocatorCreate(OfLiteDevice* device) {
   return OfLiteGenericAllocatorCreate(device);

@@ -14,19 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 // #include "cuda.h"
+#include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/core/device.h"
 
-static const OfLiteDeviceId OfLiteCUDADeviceId = 0;
-static const char* OfLiteCUDADeviceName = "CUDA";
+extern const OfLiteDeviceId OfLiteCUDADeviceId = 0;
+static const char* OfLiteCUDADeviceName = "cuda";
 
 typedef struct OfLiteCUDADevice {
   OfLiteDeviceVTable* vtable;
   size_t ordinal;
 } OfLiteCUDADevice;
 
-void OfLiteCUDADeviceDestory(OfLiteDevice* device) {
-  delete reinterpret_cast<OfLiteCUDADevice*>(device);
-}
+void OfLiteCUDADeviceDestory(OfLiteDevice* device) { OfLiteFree(device); }
 
 void OfLiteCUDADeviceQueryId(const OfLiteDevice* device, OfLiteDeviceId* id) {
   *id = OfLiteCUDADeviceId;
@@ -96,7 +95,8 @@ static OfLiteDeviceVTable vtable = {
 };
 
 static OfLiteDevice* OfLiteCUDADeviceCreate(size_t ordinal) {
-  OfLiteCUDADevice* device = new OfLiteCUDADevice;
+  OfLiteCUDADevice* device = reinterpret_cast<OfLiteCUDADevice*>(
+      OfLiteMalloc(sizeof(OfLiteCUDADevice)));
   device->vtable = &vtable;
   device->ordinal = ordinal;
   return reinterpret_cast<OfLiteDevice*>(device);

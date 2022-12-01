@@ -191,8 +191,7 @@ OFLITE_API void OfLiteExecutionContextOutputSize(
 }
 
 OFLITE_API void OfLiteExecutionContextInput(
-    const OfLiteExecutionContext* context, size_t index,
-    const OfLiteTensor** input) {
+    const OfLiteExecutionContext* context, size_t index, OfLiteTensor** input) {
   if (index >= context->inputs->size) {
     // TODO(): index is out of boundary
   }
@@ -201,7 +200,7 @@ OFLITE_API void OfLiteExecutionContextInput(
 
 OFLITE_API void OfLiteExecutionContextOutput(
     const OfLiteExecutionContext* context, size_t index,
-    const OfLiteTensor** output) {
+    OfLiteTensor** output) {
   if (index >= context->outputs->size) {
     // TODO(): index is out of boundary
   }

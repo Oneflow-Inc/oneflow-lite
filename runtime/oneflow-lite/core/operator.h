@@ -25,11 +25,13 @@ extern "C" {
 typedef struct OfLiteOperator OfLiteOperator;
 typedef struct OfLiteOpDef OfLiteOpDef;
 
-void OfLiteOperatorCreate(const OfLiteOpDef* def, OfLiteOperator** op);
-void OfLiteOperatorDestory(OfLiteOperator* op);
+OFLITE_API void OfLiteOperatorCreate(const OfLiteOpDef* def,
+                                     OfLiteOperator** op);
+OFLITE_API void OfLiteOperatorDestory(OfLiteOperator* op);
 
-void OfLiteOperatorCompute(OfLiteOperator* op, const OfLiteTensorSpan& inputs,
-                           const OfLiteTensorSpan& outputs);
+OFLITE_API void OfLiteOperatorCompute(OfLiteOperator* op,
+                                      const OfLiteTensorSpan& inputs,
+                                      const OfLiteTensorSpan& outputs);
 
 typedef struct OfLiteOperatorVTable {
   void (*destory)(OfLiteOperator* op);

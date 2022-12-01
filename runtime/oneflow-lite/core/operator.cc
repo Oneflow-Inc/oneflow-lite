@@ -15,13 +15,15 @@ limitations under the License.
 */
 #include "oneflow-lite/core/operator.h"
 
-void OfLiteOperatorCreate(const OfLiteOpDef* def, OfLiteOperator** op) {}
+OFLITE_API void OfLiteOperatorCreate(const OfLiteOpDef* def,
+                                     OfLiteOperator** op) {}
 
-void OfLiteOperatorDestory(OfLiteOperator* op) {
+OFLITE_API void OfLiteOperatorDestory(OfLiteOperator* op) {
   reinterpret_cast<OfLiteOperatorVTable*>(op)->destory(op);
 }
 
-void OfLiteOperatorCompute(OfLiteOperator* op, OfLiteTensorSpan inputs,
-                           OfLiteTensorSpan outputs) {
+OFLITE_API void OfLiteOperatorCompute(OfLiteOperator* op,
+                                      const OfLiteTensorSpan& inputs,
+                                      const OfLiteTensorSpan& outputs) {
   reinterpret_cast<OfLiteOperatorVTable*>(op)->compute(op, inputs, outputs);
 }

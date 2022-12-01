@@ -42,12 +42,10 @@ OFLITE_API void OfLiteExecutionContextOutputSize(
     const OfLiteExecutionContext* context, size_t* output_size);
 
 OFLITE_API void OfLiteExecutionContextInput(
-    const OfLiteExecutionContext* context, size_t index,
-    const OfLiteTensor** input);
+    const OfLiteExecutionContext* context, size_t index, OfLiteTensor** input);
 
 OFLITE_API void OfLiteExecutionContextOutput(
-    const OfLiteExecutionContext* context, size_t index,
-    const OfLiteTensor** output);
+    const OfLiteExecutionContext* context, size_t index, OfLiteTensor** output);
 
 OFLITE_API void OfLiteExecutionContextInvoke(OfLiteExecutionContext* context);
 

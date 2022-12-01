@@ -15,6 +15,8 @@ limitations under the License.
 */
 #include "oneflow-lite/core/device.h"
 
+#include <assert.h>
+
 static const size_t OFLITE_DEVICE_COUNT_LIMIT = 64;
 static const size_t OFLITE_DEVICE_TYPE_LENGTH_LIMIT = 128;
 
@@ -96,17 +98,13 @@ OFLITE_API void OfLiteDeviceFreeHost(OfLiteDevice* device, void* ptr) {
 
 OFLITE_API void OfLiteDeviceRegisterFactory(OfLiteStringRef type,
                                             OfLiteDeviceFactory factory) {
-  if (type.size >= OFLITE_DEVICE_TYPE_LENGTH_LIMIT) {
-    // TODO(): the length of device type name should less than 128
-    return;
-  }
+  assert(type.size < OFLITE_DEVICE_TYPE_LENGTH_LIMIT &&
+         "the length of device type name should less than 128");
   OfLiteDeviceRegistry* registry = GetOfLiteDeviceRegistry();
-  if (registry->size == OFLITE_DEVICE_COUNT_LIMIT) {
-    // TODO(): failed to register device
-    return;
-  }
+  assert(registry->size < OFLITE_DEVICE_COUNT_LIMIT);
+
   OfLiteDeviceFactoryItem* item = &registry->items[registry->size];
-  strncpy(item->type, type.data, OFLITE_DEVICE_TYPE_LENGTH_LIMIT - 1);
+  strncpy(item->type, type.data, type.size);
   item->type[type.size] = 0;
   item->factory = factory;
   registry->size += 1;
