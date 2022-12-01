@@ -16,12 +16,13 @@ limitations under the License.
 // #include "cuda.h"
 #include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/core/device.h"
+#include "oneflow-lite/core/vtable_handle.h"
 
 extern const OfLiteDeviceId OfLiteCUDADeviceId = 0;
 static const char* OfLiteCUDADeviceName = "cuda";
 
 typedef struct OfLiteCUDADevice {
-  OfLiteDeviceVTable* vtable;
+  OfLiteVTableHandle handle;
   size_t ordinal;
 } OfLiteCUDADevice;
 
@@ -97,7 +98,7 @@ static OfLiteDeviceVTable vtable = {
 static OfLiteDevice* OfLiteCUDADeviceCreate(size_t ordinal) {
   OfLiteCUDADevice* device = reinterpret_cast<OfLiteCUDADevice*>(
       OfLiteMalloc(sizeof(OfLiteCUDADevice)));
-  device->vtable = &vtable;
+  device->handle.vtable = &vtable;
   device->ordinal = ordinal;
   return reinterpret_cast<OfLiteDevice*>(device);
 }

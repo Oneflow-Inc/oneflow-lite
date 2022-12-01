@@ -15,9 +15,10 @@ limitations under the License.
 */
 #include "oneflow-lite/core/allocator.h"
 #include "oneflow-lite/core/device.h"
+#include "oneflow-lite/core/vtable_handle.h"
 
 typedef struct OfLiteGenericAllocator {
-  OfLiteAllocatorVTable* vtable;
+  OfLiteVTableHandle handle;
   OfLiteDevice* device;
 } OfLiteGenericAllocator;
 
@@ -47,7 +48,7 @@ static OfLiteAllocatorVTable vtable = {
 
 OFLITE_API OfLiteAllocator* OfLiteGenericAllocatorCreate(OfLiteDevice* device) {
   OfLiteGenericAllocator* alloca = new OfLiteGenericAllocator;
-  alloca->vtable = &vtable;
+  alloca->handle.vtable = &vtable;
   alloca->device = device;
   return reinterpret_cast<OfLiteAllocator*>(alloca);
 }

@@ -15,15 +15,23 @@ limitations under the License.
 */
 #include "oneflow-lite/core/operator.h"
 
+#include "oneflow-lite/core/vtable_handle.h"
+
 OFLITE_API void OfLiteOperatorCreate(const OfLiteOpDef* def,
                                      OfLiteOperator** op) {}
 
+#define OP_VTABLE_CAST(op)                 \
+  reinterpret_cast<OfLiteOperatorVTable*>( \
+      reinterpret_cast<const OfLiteVTableHandle*>(op)->vtable)
+
 OFLITE_API void OfLiteOperatorDestory(OfLiteOperator* op) {
-  reinterpret_cast<OfLiteOperatorVTable*>(op)->destory(op);
+  OP_VTABLE_CAST(op)->destory(op);
 }
 
 OFLITE_API void OfLiteOperatorCompute(OfLiteOperator* op,
                                       const OfLiteTensorSpan& inputs,
                                       const OfLiteTensorSpan& outputs) {
-  reinterpret_cast<OfLiteOperatorVTable*>(op)->compute(op, inputs, outputs);
+  OP_VTABLE_CAST(op)->compute(op, inputs, outputs);
 }
+
+#undef OP_VTABLE_CAST

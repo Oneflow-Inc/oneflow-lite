@@ -16,12 +16,19 @@ limitations under the License.
 #include "oneflow-lite/core/stream.h"
 
 #include "oneflow-lite/core/device.h"
+#include "oneflow-lite/core/vtable_handle.h"
 
 OFLITE_API void OfLiteStreamCreate(OfLiteDevice* device,
                                    OfLiteStream** stream) {
   OfLiteDeviceCreateStream(device, stream);
 }
 
+#define STREAM_VTABLE_CAST(stream)       \
+  reinterpret_cast<OfLiteStreamVTable*>( \
+      reinterpret_cast<const OfLiteVTableHandle*>(stream)->vtable)
+
 OFLITE_API void OfLiteStreamDestory(OfLiteStream* stream) {
-  reinterpret_cast<OfLiteStreamVTable*>(stream)->destory(stream);
+  STREAM_VTABLE_CAST(stream)->destory(stream);
 }
+
+#undef STREAM_VTABLE_CAST

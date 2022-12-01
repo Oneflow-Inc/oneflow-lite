@@ -15,7 +15,10 @@ limitations under the License.
 */
 #include "oneflow-lite/core/allocator.h"
 
+#include <assert.h>
+
 #include "oneflow-lite/base/memory.h"
+#include "oneflow-lite/core/vtable_handle.h"
 
 typedef struct OfLiteHostAllocator {
   OfLiteAllocatorVTable* vtable;
@@ -91,34 +94,38 @@ OFLITE_API void OfLiteAllocatorCreate(OfLiteDevice* device,
   // TODO(): create allocator error
 }
 
+#define ALLOCATOR_VTABLE_CAST(alloca)       \
+  reinterpret_cast<OfLiteAllocatorVTable*>( \
+      reinterpret_cast<const OfLiteVTableHandle*>(alloca)->vtable)
+
 OFLITE_API void OfLiteAllocatorDestory(OfLiteAllocator* alloca) {
-  reinterpret_cast<OfLiteAllocatorVTable*>(alloca)->destory(alloca);
+  ALLOCATOR_VTABLE_CAST(alloca)->destory(alloca);
 }
 
 OFLITE_API void OfLiteAllocatorMalloc(OfLiteAllocator* alloca, size_t size,
                                       void** ptr) {
-  reinterpret_cast<OfLiteAllocatorVTable*>(alloca)->malloc(alloca, size, ptr);
+  ALLOCATOR_VTABLE_CAST(alloca)->malloc(alloca, size, ptr);
 }
 
 OFLITE_API void OfLiteAllocatorFree(OfLiteAllocator* alloca, void* ptr) {
-  reinterpret_cast<OfLiteAllocatorVTable*>(alloca)->free(alloca, ptr);
+  ALLOCATOR_VTABLE_CAST(alloca)->free(alloca, ptr);
 }
 
 OFLITE_API void OfLiteAllocatorAlignedAlloc(OfLiteAllocator* alloca,
                                             size_t alignment, size_t size,
                                             void** ptr) {
-  reinterpret_cast<OfLiteAllocatorVTable*>(alloca)->aligned_alloc(
-      alloca, alignment, size, ptr);
+  ALLOCATOR_VTABLE_CAST(alloca)->aligned_alloc(alloca, alignment, size, ptr);
 }
+
+#undef ALLOCATOR_VTABLE_CAST
 
 OFLITE_API void OfLiteAllocatorRegisterFactory(OfLiteDeviceId device,
                                                OfLiteAllocatorType type,
                                                OfLiteAllocatorFactory factory) {
   OfLiteAllocatorRegistry* registry = GetOfLiteAllocatorRegistry();
-  if (registry->size == OFLITE_ALLOCATOR_COUNT_LIMIT) {
-    // TODO(): failed to register allocator
-    return;
-  }
+  assert(registry->size < OFLITE_ALLOCATOR_COUNT_LIMIT &&
+         "failed to register allocator");
+
   OfLiteAllocatorFactoryItem* item = &registry->items[registry->size];
   item->device_id = device;
   item->type = type;

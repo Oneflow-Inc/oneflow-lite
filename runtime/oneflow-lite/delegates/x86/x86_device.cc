@@ -16,12 +16,13 @@ limitations under the License.
 #include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/base/stringref.h"
 #include "oneflow-lite/core/device.h"
+#include "oneflow-lite/core/vtable_handle.h"
 
 extern const OfLiteDeviceId OfLiteX86DeviceId = 0;
 static const char* OfLiteX86DeviceName = "x86";
 
 typedef struct OfLiteX86Device {
-  OfLiteDeviceVTable* vtable;
+  OfLiteVTableHandle handle;
   size_t ordinal;
 } OfLiteX86Device;
 
@@ -74,7 +75,7 @@ static OfLiteDeviceVTable vtable = {
 static OfLiteDevice* OfLiteX86DeviceCreate(size_t ordinal) {
   OfLiteX86Device* device =
       reinterpret_cast<OfLiteX86Device*>(OfLiteMalloc(sizeof(OfLiteX86Device)));
-  device->vtable = &vtable;
+  device->handle.vtable = &vtable;
   device->ordinal = ordinal;
   return reinterpret_cast<OfLiteDevice*>(device);
 }

@@ -17,6 +17,8 @@ limitations under the License.
 
 #include <assert.h>
 
+#include "oneflow-lite/core/vtable_handle.h"
+
 static const size_t OFLITE_DEVICE_COUNT_LIMIT = 64;
 static const size_t OFLITE_DEVICE_TYPE_LENGTH_LIMIT = 128;
 
@@ -48,53 +50,58 @@ OFLITE_API void OfLiteDeviceCreate(OfLiteStringRef type, size_t ordinal,
   // TODO(): create device error
 }
 
+#define DEVICE_VTABLE_CAST(device)       \
+  reinterpret_cast<OfLiteDeviceVTable*>( \
+      reinterpret_cast<const OfLiteVTableHandle*>(device)->vtable)
+
 OFLITE_API void OfLiteDeviceDestory(OfLiteDevice* device) {
-  reinterpret_cast<OfLiteDeviceVTable*>(device)->destory(device);
+  DEVICE_VTABLE_CAST(device)->destory(device);
 }
 
 OFLITE_API void OfLiteDeviceQueryId(const OfLiteDevice* device,
                                     OfLiteDeviceId* id) {
-  reinterpret_cast<const OfLiteDeviceVTable*>(device)->query_id(device, id);
+  DEVICE_VTABLE_CAST(device)->query_id(device, id);
 }
 
 OFLITE_API void OfLiteDeviceQueryName(const OfLiteDevice* device,
                                       OfLiteStringRef* name) {
-  reinterpret_cast<const OfLiteDeviceVTable*>(device)->query_name(device, name);
+  DEVICE_VTABLE_CAST(device)->query_name(device, name);
 }
 
 OFLITE_API void OfLiteDeviceQueryOrdinal(const OfLiteDevice* device,
                                          size_t* ordinal) {
-  reinterpret_cast<const OfLiteDeviceVTable*>(device)->query_ordinal(device,
-                                                                     ordinal);
+  DEVICE_VTABLE_CAST(device)->query_ordinal(device, ordinal);
 }
 
 OFLITE_API void OfLiteDeviceCreateEvent(OfLiteDevice* device,
                                         OfLiteEvent** event) {
-  reinterpret_cast<OfLiteDeviceVTable*>(device)->create_event(device, event);
+  DEVICE_VTABLE_CAST(device)->create_event(device, event);
 }
 
 OFLITE_API void OfLiteDeviceCreateStream(OfLiteDevice* device,
                                          OfLiteStream** stream) {
-  reinterpret_cast<OfLiteDeviceVTable*>(device)->create_stream(device, stream);
+  DEVICE_VTABLE_CAST(device)->create_stream(device, stream);
 }
 
 OFLITE_API void OfLiteDeviceMalloc(OfLiteDevice* device, size_t size,
                                    void** ptr) {
-  reinterpret_cast<OfLiteDeviceVTable*>(device)->malloc(device, size, ptr);
+  DEVICE_VTABLE_CAST(device)->malloc(device, size, ptr);
 }
 
 OFLITE_API void OfLiteDeviceFree(OfLiteDevice* device, void* ptr) {
-  reinterpret_cast<OfLiteDeviceVTable*>(device)->free(device, ptr);
+  DEVICE_VTABLE_CAST(device)->free(device, ptr);
 }
 
 OFLITE_API void OfLiteDeviceMallocHost(OfLiteDevice* device, size_t size,
                                        void** ptr) {
-  reinterpret_cast<OfLiteDeviceVTable*>(device)->malloc_host(device, size, ptr);
+  DEVICE_VTABLE_CAST(device)->malloc_host(device, size, ptr);
 }
 
 OFLITE_API void OfLiteDeviceFreeHost(OfLiteDevice* device, void* ptr) {
-  reinterpret_cast<OfLiteDeviceVTable*>(device)->free_host(device, ptr);
+  DEVICE_VTABLE_CAST(device)->free_host(device, ptr);
 }
+
+#undef DEVICE_VTABLE_CAST
 
 OFLITE_API void OfLiteDeviceRegisterFactory(OfLiteStringRef type,
                                             OfLiteDeviceFactory factory) {

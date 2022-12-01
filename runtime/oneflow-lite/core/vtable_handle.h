@@ -13,21 +13,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include "oneflow-lite/core/event.h"
+#ifndef ONEFLOW_LITE_CORE_VTABLE_HANDLE_H_
+#define ONEFLOW_LITE_CORE_VTABLE_HANDLE_H_
 
-#include "oneflow-lite/core/device.h"
-#include "oneflow-lite/core/vtable_handle.h"
+#ifdef __cplusplus
+extern "C" {
+#endif  // __cplusplus
 
-OFLITE_API void OfLiteEventCreate(OfLiteDevice* device, OfLiteEvent** event) {
-  OfLiteDeviceCreateEvent(device, event);
-}
+typedef struct OfLiteVTableHandle {
+  void* vtable;
+} OfLiteVTableHandle;
 
-#define EVENT_VTABLE_CAST(event)        \
-  reinterpret_cast<OfLiteEventVTable*>( \
-      reinterpret_cast<const OfLiteVTableHandle*>(event)->vtable)
+#ifdef __cplusplus
+}  // extern "C"
+#endif  // __cplusplus
 
-OFLITE_API void OfLiteEventDestory(OfLiteEvent* event) {
-  EVENT_VTABLE_CAST(event)->destory(event);
-}
-
-#undef EVENT_VTABLE_CAST
+#endif  // ONEFLOW_LITE_CORE_VTABLE_HANDLE_H_
