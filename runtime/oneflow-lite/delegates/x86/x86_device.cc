@@ -80,4 +80,4 @@ static OfLiteDevice* OfLiteX86DeviceCreate(size_t ordinal) {
   return reinterpret_cast<OfLiteDevice*>(device);
 }
 
-OFLITE_REGISTER_DEVICE(OfLiteX86DeviceName, OfLiteX86DeviceCreate);
+OFLITE_REGISTER_HOST_DEVICE(OfLiteX86DeviceName, OfLiteX86DeviceCreate);

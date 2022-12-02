@@ -90,8 +90,9 @@ OFLITE_API void OfLiteAllocatorCreate(OfLiteDevice* device,
   // fallback to host allocator for device host memory allocation
   if (type == OfLiteAllocatorType_Device_Host) {
     OfLiteHostAllocatorCreate(alloca);
+    return;
   }
-  // TODO(): create allocator error
+  assert(false && "failed to create an allocator");
 }
 
 #define ALLOCATOR_VTABLE_CAST(alloca)       \

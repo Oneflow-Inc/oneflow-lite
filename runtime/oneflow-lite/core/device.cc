@@ -42,12 +42,12 @@ OFLITE_API void OfLiteDeviceCreate(OfLiteStringRef type, size_t ordinal,
   OfLiteDeviceRegistry* registry = GetOfLiteDeviceRegistry();
   for (size_t i = 0; i < registry->size; ++i) {
     const OfLiteDeviceFactoryItem& item = registry->items[i];
-    if (0 == strcmp(type.data, item.type)) {
+    if (0 == strncmp(type.data, item.type, type.size)) {
       *device = item.factory(ordinal);
       return;
     }
   }
-  // TODO(): create device error
+  assert(false && "failed to create a device");
 }
 
 #define DEVICE_VTABLE_CAST(device)       \

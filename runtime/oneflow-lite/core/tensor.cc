@@ -15,6 +15,7 @@ limitations under the License.
 */
 #include "oneflow-lite/core/tensor.h"
 
+#include <assert.h>
 #include <string.h>
 
 #include "oneflow-lite/base/memory.h"
@@ -42,12 +43,12 @@ OFLITE_API void OfLiteTensorCreateFromBuffer(const OfLiteTensorDesc& desc,
                                              size_t offset,
                                              OfLiteTensor** tensor) {
   size_t size = OfLiteDimsCount(desc.dims) * OfLiteDataTypeByteSize(desc.dtype);
-  if (OfLiteBufferByteSize(buffer) < size + offset) {
-    // TODO
-    return;
-  }
+  assert(size + offset <= OfLiteBufferByteSize(buffer) &&
+         "the buffer size is not enough");
+
   OfLiteTensor* tensor_impl =
       reinterpret_cast<OfLiteTensor*>(OfLiteMalloc(sizeof(OfLiteTensor)));
+  memcpy(&tensor_impl->desc, &desc, sizeof(desc));
   OfLiteBufferRetain(buffer);
   tensor_impl->buffer = buffer;
   tensor_impl->buffer_offset = offset;

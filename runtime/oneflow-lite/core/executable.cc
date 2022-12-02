@@ -15,6 +15,7 @@ limitations under the License.
 */
 #include "oneflow-lite/core/executable.h"
 
+#include <assert.h>
 #include <stdio.h>
 
 #include "oneflow-lite/base/memory.h"
@@ -29,9 +30,8 @@ typedef struct OfLiteNativeExecutable {
 OFLITE_API void OfLiteExecutableCreate(OfLiteExecutable** executable,
                                        OfLiteStringRef filepath) {
   FILE* file = fopen(filepath.data, "rb");
-  if (file == NULL) {
-    // TODO()
-  }
+  assert(file && "failed to open executable file");
+
   if (fseek(file, 0, SEEK_END) != -1) {
     // TODO()
   }
@@ -98,9 +98,8 @@ OFLITE_API void OfLiteExecutableInput(const OfLiteExecutable* executable,
       reinterpret_cast<const OfLiteNativeExecutable*>(executable);
   flatbuffers_int32_vec_t inputs =
       oneflow_lite_ExecutableDef_inputs(native_executable->def);
-  if (index >= flatbuffers_int32_vec_len(inputs)) {
-    // TODO()
-  }
+  assert(index < flatbuffers_int32_vec_len(inputs) &&
+         "input index is out of boundary");
   *input = flatbuffers_int32_vec_at(inputs, index);
 }
 
@@ -111,9 +110,8 @@ OFLITE_API void OfLiteExecutableInputName(const OfLiteExecutable* executable,
       reinterpret_cast<const OfLiteNativeExecutable*>(executable);
   flatbuffers_string_vec_t input_names =
       oneflow_lite_ExecutableDef_input_names(native_executable->def);
-  if (index >= flatbuffers_string_vec_len(input_names)) {
-    // TODO()
-  }
+  assert(index < flatbuffers_string_vec_len(input_names) &&
+         "input index is out of boundary");
   flatbuffers_string_t flatc_name =
       flatbuffers_string_vec_at(input_names, index);
   *input_name = OfLiteStringRef{flatc_name, flatbuffers_string_len(flatc_name)};
@@ -125,9 +123,8 @@ OFLITE_API void OfLiteExecutableOutput(const OfLiteExecutable* executable,
       reinterpret_cast<const OfLiteNativeExecutable*>(executable);
   flatbuffers_int32_vec_t outputs =
       oneflow_lite_ExecutableDef_outputs(native_executable->def);
-  if (index >= flatbuffers_int32_vec_len(outputs)) {
-    // TODO()
-  }
+  assert(index < flatbuffers_int32_vec_len(outputs) &&
+         "output index is out of boundary");
   *output = flatbuffers_int32_vec_at(outputs, index);
 }
 
@@ -138,9 +135,8 @@ OFLITE_API void OfLiteExecutableOutputName(const OfLiteExecutable* executable,
       reinterpret_cast<const OfLiteNativeExecutable*>(executable);
   flatbuffers_string_vec_t output_names =
       oneflow_lite_ExecutableDef_output_names(native_executable->def);
-  if (index >= flatbuffers_string_vec_len(output_names)) {
-    // TODO()
-  }
+  assert(index < flatbuffers_string_vec_len(output_names) &&
+         "output index is out of boundary");
   flatbuffers_string_t flatc_name =
       flatbuffers_string_vec_at(output_names, index);
   *output_name =
@@ -163,9 +159,8 @@ OFLITE_API void OfLiteExecutableOperand(const OfLiteExecutable* executable,
       reinterpret_cast<const OfLiteNativeExecutable*>(executable);
   oneflow_lite_TensorDef_vec_t operands =
       oneflow_lite_ExecutableDef_operands(native_executable->def);
-  if (index >= oneflow_lite_TensorDef_vec_len(operands)) {
-    // TODO()
-  }
+  assert(index < oneflow_lite_TensorDef_vec_len(operands) &&
+         "operand index is out of boundary");
   oneflow_lite_TensorDef_table_t flatc_operand =
       oneflow_lite_TensorDef_vec_at(operands, index);
   *operand = reinterpret_cast<const OfLiteTensorDef*>(flatc_operand);
@@ -186,9 +181,8 @@ OFLITE_API void OfLiteExecutableDevice(const OfLiteExecutable* executable,
       reinterpret_cast<const OfLiteNativeExecutable*>(executable);
   flatbuffers_string_vec_t devices =
       oneflow_lite_ExecutableDef_devices(native_executable->def);
-  if (index >= flatbuffers_string_vec_len(devices)) {
-    // TODO()
-  }
+  assert(index < flatbuffers_string_vec_len(devices) &&
+         "device index is out of boundary");
   flatbuffers_string_t flatc_device = flatbuffers_string_vec_at(devices, index);
   *device = OfLiteStringRef{flatc_device, flatbuffers_string_len(flatc_device)};
 }
@@ -209,9 +203,8 @@ OFLITE_API void OfLiteExecutableBufferSegment(
       reinterpret_cast<const OfLiteNativeExecutable*>(executable);
   oneflow_lite_BufferSegmentDef_vec_t buffer_sgements =
       oneflow_lite_ExecutableDef_segments(native_executable->def);
-  if (index >= oneflow_lite_BufferSegmentDef_vec_len(buffer_sgements)) {
-    // TODO()
-  }
+  assert(index < oneflow_lite_BufferSegmentDef_vec_len(buffer_sgements) &&
+         "segment index is out of boundary");
   oneflow_lite_BufferSegmentDef_table_t flatc_buffer_sgement =
       oneflow_lite_BufferSegmentDef_vec_at(buffer_sgements, index);
   *buffer_sgement =
@@ -233,9 +226,8 @@ OFLITE_API void OfLiteExecutableOp(const OfLiteExecutable* executable,
       reinterpret_cast<const OfLiteNativeExecutable*>(executable);
   oneflow_lite_OpDef_vec_t ops =
       oneflow_lite_ExecutableDef_ops(native_executable->def);
-  if (index >= oneflow_lite_OpDef_vec_len(ops)) {
-    // TODO()
-  }
+  assert(index < oneflow_lite_OpDef_vec_len(ops) &&
+         "op index is out of boundary");
   oneflow_lite_OpDef_table_t flatc_op = oneflow_lite_OpDef_vec_at(ops, index);
   *op = reinterpret_cast<const OfLiteOpDef*>(flatc_op);
 }
@@ -256,9 +248,8 @@ OFLITE_API void OfLiteExecutableFunction(const OfLiteExecutable* executable,
       reinterpret_cast<const OfLiteNativeExecutable*>(executable);
   oneflow_lite_OpFunctionDef_vec_t functions =
       oneflow_lite_ExecutableDef_functions(native_executable->def);
-  if (index >= oneflow_lite_OpFunctionDef_vec_len(functions)) {
-    // TODO()
-  }
+  assert(index < oneflow_lite_OpFunctionDef_vec_len(functions) &&
+         "function index is out of boundary");
   oneflow_lite_OpFunctionDef_table_t flatc_function =
       oneflow_lite_OpFunctionDef_vec_at(functions, index);
   *function = reinterpret_cast<const OfLiteOpFunctionDef*>(flatc_function);

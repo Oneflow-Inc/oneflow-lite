@@ -88,6 +88,10 @@ OFLITE_API void OfLiteDeviceRegisterFactory(OfLiteStringRef type,
                             OfLiteStringRefCreate(type), factory), \
                         0)};
 
+#define OFLITE_REGISTER_HOST_DEVICE(type, factory) \
+  OFLITE_REGISTER_DEVICE("host", factory)          \
+  OFLITE_REGISTER_DEVICE(type, factory)
+
 #ifdef __cplusplus
 }  // extern "C"
 #endif  // __cplusplus
