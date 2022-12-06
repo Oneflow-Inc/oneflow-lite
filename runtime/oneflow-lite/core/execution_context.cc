@@ -15,8 +15,6 @@ limitations under the License.
 */
 #include "oneflow-lite/core/execution_context.h"
 
-#include <assert.h>
-
 #include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/core/device.h"
 #include "oneflow-lite/core/device_context.h"
@@ -58,8 +56,9 @@ static void OfLiteTensorDescCreateFromTensorDef(const OfLiteTensorDef* tensor,
       oneflow_lite_TensorDef_layout(flatcc_tensor));
   flatbuffers_int64_vec_t sizes = oneflow_lite_TensorDef_sizes(flatcc_tensor);
   desc->dims.ndim = flatbuffers_int64_vec_len(sizes);
-  assert(OfLiteDimsCheck(desc->dims) &&
-         "Tensor sizes is too large, only supports up to 10D array");
+  if (!OfLiteDimsCheck(desc->dims)) {
+    OFLITE_FAIL("Tensor sizes is too large, only supports up to 10D array\n");
+  }
   for (size_t i = 0; i < desc->dims.ndim; ++i) {
     desc->dims.sizes[i] = flatbuffers_int64_vec_at(sizes, i);
   }
@@ -78,8 +77,9 @@ static void OfLiteExecutionContextGetOrCreateDriver(
       }
     }
   }
-  assert(context->driver_size < OFLITE_DRIVER_NUM_LIMIT &&
-         "the max number of drivers is 8");
+  if (context->driver_size >= OFLITE_DRIVER_NUM_LIMIT) {
+    OFLITE_FAIL("The number of drivers alive at the same time has reached the upper limit 8\n");
+  }
   // create a new driver and reallocate space for drivers
   OfLiteDriverCreate(backend, driver);
   context->drivers[context->driver_size] = *driver;
@@ -121,8 +121,9 @@ static void OfLiteExecutionContextCreateImpl(
     int32_t device = oneflow_lite_BufferSegmentDef_device(flatcc_segment);
     // int32_t alignment =
     // oneflow_lite_BufferSegmentDef_alignment(flatcc_segment);
-    assert(device < context->device_context_size &&
-           "Buffer segment device id should less than device size");
+    if (device >= context->device_context_size) {
+      OFLITE_FAIL("Buffer segment device id should less than device size\n");
+    }
     OfLiteBufferCreate(context->device_contexts[device]->device_alloca, size,
                        context->buffer_segments + i);
   }
@@ -142,8 +143,9 @@ static void OfLiteExecutionContextCreateImpl(
     int32_t segment_id = oneflow_lite_TensorDef_segment_id(flatcc_tensor);
     int64_t segment_offset =
         oneflow_lite_TensorDef_segment_offset(flatcc_tensor);
-    assert(segment_id < context->buffer_segment_size &&
-           "Tensor segment id should less than buffer segment size");
+    if (segment_id >= context->buffer_segment_size) {
+      OFLITE_FAIL("Tensor segment id should less than buffer segment size\n");
+    }
     OfLiteTensorCreateFromBuffer(desc, context->buffer_segments[segment_id],
                                  segment_offset, &(context->operands[i]));
   }
@@ -225,14 +227,18 @@ OFLITE_API void OfLiteExecutionContextOutputSize(
 
 OFLITE_API void OfLiteExecutionContextInput(
     const OfLiteExecutionContext* context, size_t index, OfLiteTensor** input) {
-  assert(index < context->inputs->size && "input index is out of boundary");
+  if (index >= context->inputs->size) {
+    OFLITE_FAIL("input index is out of boundary\n");
+  }
   *input = context->inputs->items[index];
 }
 
 OFLITE_API void OfLiteExecutionContextOutput(
     const OfLiteExecutionContext* context, size_t index,
     OfLiteTensor** output) {
-  assert(index < context->outputs->size && "output index is out of boundary");
+  if (index >= context->outputs->size) {
+    OFLITE_FAIL("output index is out of boundary\n");
+  }
   *output = context->outputs->items[index];
 }
 

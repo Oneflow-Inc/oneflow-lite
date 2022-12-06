@@ -21,6 +21,7 @@ limitations under the License.
 #include "oneflow-lite/core/device.h"
 #include "oneflow-lite/core/vtable_handle.h"
 #include "oneflow-lite/delegates/ascend/ascend_alloca.h"
+#include "oneflow-lite/delegates/ascend/ascend_create_op.h"
 #include "oneflow-lite/delegates/ascend/ascend_utils.h"
 
 typedef struct OfLiteAscendDevice {
@@ -56,6 +57,12 @@ void OfLiteAscendDeviceCreateAlloca(OfLiteDevice* device,
   *alloca = OfLiteAscendAllocaCreate(device, alloca_type);
 }
 
+void OfLiteAscendDeviceCreateOp(OfLiteDevice* device,
+                                const OfLiteOpDef* def,
+                                OfLiteOperator** op) {
+  *op = OfLiteAscendCreateOp(device, def);
+}
+
 void OfLiteAscendDeviceMalloc(OfLiteDevice* device, size_t size, void** ptr) {
   ACL_CHECK(aclrtMalloc(ptr, size, ACL_MEM_MALLOC_NORMAL_ONLY));
 }
@@ -80,6 +87,7 @@ static OfLiteDeviceVTable vtable = {
     .create_event = OfLiteAscendDeviceCreateEvent,
     .create_stream = OfLiteAscendDeviceCreateStream,
     .create_alloca = OfLiteAscendDeviceCreateAlloca,
+    .create_op = OfLiteAscendDeviceCreateOp,
     .malloc = OfLiteAscendDeviceMalloc,
     .free = OfLiteAscendDeviceFree,
     .malloc_host = OfLiteAscendDeviceMallocHost,

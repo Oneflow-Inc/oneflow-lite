@@ -62,6 +62,7 @@ OFLITE_API void OfLiteTensorResize(OfLiteTensor* tensor,
                                    const OfLiteDims& dims);
 
 OFLITE_API void* OfLiteTensorData(const OfLiteTensor* tensor);
+OFLITE_API size_t OfLiteTensorDataSize(const OfLiteTensor* tensor);
 
 OFLITE_API void OfLiteTensorSpanCreate(size_t size, OfLiteTensorSpan** span);
 OFLITE_API void OfLiteTensorSpanDestory(OfLiteTensorSpan* span);

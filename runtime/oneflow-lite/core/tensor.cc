@@ -15,7 +15,6 @@ limitations under the License.
 */
 #include "oneflow-lite/core/tensor.h"
 
-#include <assert.h>
 #include <string.h>
 
 #include "oneflow-lite/base/memory.h"
@@ -24,6 +23,7 @@ typedef struct OfLiteTensor {
   OfLiteTensorDesc desc;
   OfLiteBuffer* buffer;
   size_t buffer_offset;
+  size_t buffer_length;
 } OfLiteTensor;
 
 OFLITE_API void OfLiteTensorCreate(const OfLiteTensorDesc& desc,
@@ -35,6 +35,7 @@ OFLITE_API void OfLiteTensorCreate(const OfLiteTensorDesc& desc,
   memcpy(&tensor_impl->desc, &desc, sizeof(desc));
   OfLiteBufferCreate(alloca, size, &tensor_impl->buffer);
   tensor_impl->buffer_offset = 0;
+  tensor_impl->buffer_length = size;
   *tensor = reinterpret_cast<OfLiteTensor*>(tensor_impl);
 }
 
@@ -43,15 +44,16 @@ OFLITE_API void OfLiteTensorCreateFromBuffer(const OfLiteTensorDesc& desc,
                                              size_t offset,
                                              OfLiteTensor** tensor) {
   size_t size = OfLiteDimsCount(desc.dims) * OfLiteDataTypeByteSize(desc.dtype);
-  assert(size + offset <= OfLiteBufferByteSize(buffer) &&
-         "the buffer size is not enough");
-
+  if (size + offset > OfLiteBufferByteSize(buffer)) {
+    OFLITE_FAIL("the buffer space is not enough\n");
+  }
   OfLiteTensor* tensor_impl =
       reinterpret_cast<OfLiteTensor*>(OfLiteMalloc(sizeof(OfLiteTensor)));
   memcpy(&tensor_impl->desc, &desc, sizeof(desc));
   OfLiteBufferRetain(buffer);
   tensor_impl->buffer = buffer;
   tensor_impl->buffer_offset = offset;
+  tensor_impl->buffer_length = size;
   *tensor = reinterpret_cast<OfLiteTensor*>(tensor_impl);
 }
 
@@ -82,6 +84,10 @@ OFLITE_API void OfLiteTensorAlloca(const OfLiteTensor* tensor,
 
 OFLITE_API void* OfLiteTensorData(const OfLiteTensor* tensor) {
   return OfLiteBufferBytes(tensor->buffer) + tensor->buffer_offset;
+}
+
+OFLITE_API size_t OfLiteTensorDataSize(const OfLiteTensor* tensor) {
+  return tensor->buffer_length;
 }
 
 OFLITE_API void OfLiteTensorSpanCreate(size_t size, OfLiteTensorSpan** span) {

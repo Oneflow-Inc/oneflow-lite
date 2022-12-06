@@ -16,9 +16,11 @@ limitations under the License.
 #ifndef ONEFLOW_LITE_DELAGATES_ASCEND_ASCEND_UTILS_H_
 #define ONEFLOW_LITE_DELAGATES_ASCEND_ASCEND_UTILS_H_
 
-#include <assert.h>
+#include "oneflow-lite/base/common.h"
 
 #define ACL_CHECK(status) \
-  assert((status) == ACL_ERROR_NONE && "failed to call acl runtime api")
+  if (status != ACL_ERROR_NONE) { \
+    OFLITE_FAIL("failed to call acl runtime api: %d", status); \
+  }
 
 #endif  // ONEFLOW_LITE_DELAGATES_ASCEND_ASCEND_UTILS_H_

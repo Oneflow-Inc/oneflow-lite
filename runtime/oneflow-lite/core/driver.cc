@@ -15,22 +15,20 @@ limitations under the License.
 */
 #include "oneflow-lite/core/driver.h"
 
-#include <assert.h>
-
 #include "oneflow-lite/core/device.h"
 #include "oneflow-lite/core/vtable_handle.h"
 
 static const size_t OFLITE_DRIVER_COUNT_LIMIT = 64;
-static const size_t OFLITE_DRIVER_TYPE_LENGTH_LIMIT = 128;
+extern const size_t OFLITE_DRIVER_TYPE_LENGTH_LIMIT = 128;
 
-typedef struct OfLiteDriverFactoryItem {
+typedef struct OfLiteDriverRegisterEntry {
   char type[OFLITE_DRIVER_TYPE_LENGTH_LIMIT];
   OfLiteDriverFactory factory;
-} OfLiteDriverFactoryItem;
+} OfLiteDriverRegisterEntry;
 
 typedef struct OfLiteDriverRegistry {
   size_t size;
-  OfLiteDriverFactoryItem items[OFLITE_DRIVER_COUNT_LIMIT];
+  OfLiteDriverRegisterEntry entries[OFLITE_DRIVER_COUNT_LIMIT];
 } OfLiteDriverRegistry;
 
 OfLiteDriverRegistry* GetOfLiteDriverRegistry() {
@@ -42,13 +40,13 @@ OFLITE_API void OfLiteDriverCreate(OfLiteStringRef type,
                                    OfLiteDriver** driver) {
   OfLiteDriverRegistry* registry = GetOfLiteDriverRegistry();
   for (size_t i = 0; i < registry->size; ++i) {
-    const OfLiteDriverFactoryItem& item = registry->items[i];
-    if (OfLiteStringRefEqual(type, OfLiteStringRefCreate(item.type))) {
-      *driver = item.factory();
+    const OfLiteDriverRegisterEntry& entry = registry->entries[i];
+    if (OfLiteStringRefEqual(type, OfLiteStringRefCreate(entry.type))) {
+      *driver = entry.factory();
       return;
     }
   }
-  assert(false && "failed to create a driver");
+  OFLITE_FAIL("failed to create a driver for %s\n", type.data);
 }
 
 #define DRIVER_VTABLE_CAST(driver)       \
@@ -73,14 +71,16 @@ OFLITE_API void OfLiteDriverCreateDevice(OfLiteDriver* driver, size_t ordinal,
 
 OFLITE_API void OfLiteDriverRegisterFactory(OfLiteStringRef type,
                                             OfLiteDriverFactory factory) {
-  assert(type.size < OFLITE_DRIVER_TYPE_LENGTH_LIMIT &&
-         "the length of driver type name should less than 128");
+  if (type.size >= OFLITE_DRIVER_TYPE_LENGTH_LIMIT) {
+    OFLITE_FAIL("the length of driver type name should less than 128\n");
+  }
   OfLiteDriverRegistry* registry = GetOfLiteDriverRegistry();
-  assert(registry->size < OFLITE_DRIVER_COUNT_LIMIT);
-
-  OfLiteDriverFactoryItem* item = &registry->items[registry->size];
+  if (registry->size >= OFLITE_DRIVER_COUNT_LIMIT) {
+    OFLITE_FAIL("The number of drivers has reached the upper limit\n");
+  }
+  OfLiteDriverRegisterEntry* entry = &registry->entries[registry->size];
   registry->size += 1;
-  strncpy(item->type, type.data, type.size);
-  item->type[type.size] = 0;
-  item->factory = factory;
+  strncpy(entry->type, type.data, type.size);
+  entry->type[type.size] = 0;
+  entry->factory = factory;
 }

@@ -15,8 +15,6 @@ limitations under the License.
 */
 #include "oneflow-lite/core/device.h"
 
-#include <assert.h>
-
 #include "oneflow-lite/core/driver.h"
 #include "oneflow-lite/core/vtable_handle.h"
 
@@ -57,6 +55,12 @@ OFLITE_API void OfLiteDeviceCreateAlloca(OfLiteDevice* device,
                                          OfLiteAllocaType alloca_type,
                                          OfLiteAlloca** alloca) {
   DEVICE_VTABLE_CAST(device)->create_alloca(device, alloca_type, alloca);
+}
+
+OFLITE_API void OfLiteDeviceCreateOp(OfLiteDevice* device,
+                                     const OfLiteOpDef* def,
+                                     OfLiteOperator** op) {
+  DEVICE_VTABLE_CAST(device)->create_op(device, def, op);
 }
 
 OFLITE_API void OfLiteDeviceMalloc(OfLiteDevice* device, size_t size,

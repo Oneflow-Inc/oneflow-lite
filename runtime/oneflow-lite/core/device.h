@@ -24,6 +24,7 @@ limitations under the License.
 #include "oneflow-lite/core/alloca.h"
 #include "oneflow-lite/core/driver.h"
 #include "oneflow-lite/core/event.h"
+#include "oneflow-lite/core/operator.h"
 #include "oneflow-lite/core/stream.h"
 
 #ifdef __cplusplus
@@ -53,6 +54,10 @@ OFLITE_API void OfLiteDeviceCreateAlloca(OfLiteDevice* device,
                                          OfLiteAllocaType alloca_type,
                                          OfLiteAlloca** alloca);
 
+OFLITE_API void OfLiteDeviceCreateOp(OfLiteDevice* device,
+                                     const OfLiteOpDef* def,
+                                     OfLiteOperator** op);
+
 OFLITE_API void OfLiteDeviceMalloc(OfLiteDevice* device, size_t size,
                                    void** ptr);
 
@@ -71,6 +76,8 @@ typedef struct OfLiteDeviceVTable {
   void (*create_stream)(OfLiteDevice* device, OfLiteStream** stream);
   void (*create_alloca)(OfLiteDevice* device, OfLiteAllocaType alloca_type,
                         OfLiteAlloca** alloca);
+  void (*create_op)(OfLiteDevice* device, const OfLiteOpDef* def,
+                    OfLiteOperator** op);
   void (*malloc)(OfLiteDevice* device, size_t size, void** ptr);
   void (*free)(OfLiteDevice* device, void* ptr);
   void (*malloc_host)(OfLiteDevice* device, size_t size, void** ptr);

@@ -29,21 +29,22 @@ void OfLiteExecutionUnitCreate(const OfLiteOpDef* op, OfLiteTensor** operands,
       reinterpret_cast<oneflow_lite_OpDef_table_t>(op);
 
   size_t device = oneflow_lite_OpDef_device(flatcc_op);
-  assert(device < device_context_size &&
-         "op device id should less than device context size");
-
+  if (device >= device_context_size) {
+    OFLITE_FAIL("op device id should less than device context size\n");
+  }
   (*execution_unit)->device_context = device_contexts[device];
 
   OfLitePopulateDeviceContext((*execution_unit)->device_context);
-  OfLiteOperatorCreate(op, &((*execution_unit)->op));
+  OfLiteOperatorCreate((*execution_unit)->device_context->device, op, &((*execution_unit)->op));
 
   flatbuffers_int32_vec_t inputs = oneflow_lite_OpDef_inputs(flatcc_op);
   OfLiteTensorSpanCreate(flatbuffers_int32_vec_len(inputs),
                          &((*execution_unit)->inputs));
   for (size_t i = 0; i < flatbuffers_int32_vec_len(inputs); ++i) {
     size_t input = flatbuffers_int32_vec_at(inputs, i);
-    assert(input < operand_size &&
-           "op input index should less than operand size");
+    if (input >= operand_size) {
+      OFLITE_FAIL("op input index should less than operand size\n");
+    }
     (*execution_unit)->inputs->items[i] = operands[input];
   }
   flatbuffers_int32_vec_t outputs = oneflow_lite_OpDef_outputs(flatcc_op);
@@ -51,8 +52,9 @@ void OfLiteExecutionUnitCreate(const OfLiteOpDef* op, OfLiteTensor** operands,
                          &((*execution_unit)->outputs));
   for (size_t i = 0; i < flatbuffers_int32_vec_len(outputs); ++i) {
     size_t output = flatbuffers_int32_vec_at(outputs, i);
-    assert(output < operand_size &&
-           "op output index should less than operand size");
+    if (output >= operand_size) {
+      OFLITE_FAIL("op output index should less than operand size\n");
+    }
     (*execution_unit)->outputs->items[i] = operands[output];
   }
 }

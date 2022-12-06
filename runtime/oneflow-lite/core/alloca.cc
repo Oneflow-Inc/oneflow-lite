@@ -15,8 +15,6 @@ limitations under the License.
 */
 #include "oneflow-lite/core/alloca.h"
 
-#include <assert.h>
-
 #include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/core/device.h"
 #include "oneflow-lite/core/vtable_handle.h"
