@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#include "acl/acl.h"
 #include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/base/stringref.h"
 #include "oneflow-lite/core/device.h"
@@ -24,7 +25,11 @@ typedef struct OfLiteAscendDriver {
   OfLiteVTableHandle handle;
 } OfLiteAscendDriver;
 
-void OfLiteAscendDriverDestory(OfLiteDriver* driver) { OfLiteFree(driver); }
+void OfLiteAscendDriverDestory(OfLiteDriver* driver) {
+  OfLiteFree(driver);
+  // Finalize ascendcl
+  aclFinalize();
+}
 
 void OfLiteAscendDriverQueryIdentifier(OfLiteDriver* driver,
                                        OfLiteStringRef* identifier) {
@@ -43,10 +48,12 @@ static OfLiteDriverVTable vtable = {
 };
 
 static OfLiteDriver* OfLiteAscendDriverCreate() {
+  // Initialize ascendcl
+  aclInit(NULL);
   OfLiteAscendDriver* driver = reinterpret_cast<OfLiteAscendDriver*>(
       OfLiteMalloc(sizeof(OfLiteAscendDriver)));
   driver->handle.vtable = &vtable;
   return reinterpret_cast<OfLiteDriver*>(driver);
 }
 
-OFLITE_REGISTER_HOST_DRIVER(OfLiteAscendIdentifier, OfLiteAscendDriverCreate);
+OFLITE_REGISTER_DRIVER(OfLiteAscendIdentifier, OfLiteAscendDriverCreate);

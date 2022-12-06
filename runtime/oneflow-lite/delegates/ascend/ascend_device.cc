@@ -26,9 +26,13 @@ limitations under the License.
 typedef struct OfLiteAscendDevice {
   OfLiteVTableHandle handle;
   size_t ordinal;
+  aclrtContext context;
 } OfLiteAscendDevice;
 
-void OfLiteAscendDeviceDestory(OfLiteDevice* device) { OfLiteFree(device); }
+void OfLiteAscendDeviceDestory(OfLiteDevice* device) {
+  ACL_CHECK(aclrtDestroyContext(reinterpret_cast<OfLiteAscendDevice*>(device)->context));
+  OfLiteFree(device);
+}
 
 void OfLiteAscendDeviceQueryName(const OfLiteDevice* device,
                                  OfLiteStringRef* name) {
@@ -86,5 +90,7 @@ OfLiteDevice* OfLiteAscendDeviceCreate(size_t ordinal) {
       OfLiteMalloc(sizeof(OfLiteAscendDevice)));
   device->handle.vtable = &vtable;
   device->ordinal = ordinal;
+  ACL_CHECK(aclrtSetDevice(ordinal));
+  ACL_CHECK(aclrtCreateContext(&device->context, ordinal));
   return reinterpret_cast<OfLiteDevice*>(device);
 }
