@@ -30,7 +30,8 @@ typedef struct OfLiteAscendDevice {
 } OfLiteAscendDevice;
 
 void OfLiteAscendDeviceDestory(OfLiteDevice* device) {
-  ACL_CHECK(aclrtDestroyContext(reinterpret_cast<OfLiteAscendDevice*>(device)->context));
+  ACL_CHECK(aclrtDestroyContext(
+      reinterpret_cast<OfLiteAscendDevice*>(device)->context));
   OfLiteFree(device);
 }
 
