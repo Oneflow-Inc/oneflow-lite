@@ -57,8 +57,7 @@ void OfLiteAscendDeviceCreateAlloca(OfLiteDevice* device,
   *alloca = OfLiteAscendAllocaCreate(device, alloca_type);
 }
 
-void OfLiteAscendDeviceCreateOp(OfLiteDevice* device,
-                                const OfLiteOpDef* def,
+void OfLiteAscendDeviceCreateOp(OfLiteDevice* device, const OfLiteOpDef* def,
                                 OfLiteOperator** op) {
   *op = OfLiteAscendCreateOp(device, def);
 }

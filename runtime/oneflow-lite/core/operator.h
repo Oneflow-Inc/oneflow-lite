@@ -26,7 +26,8 @@ typedef struct OfLiteOperator OfLiteOperator;
 typedef struct OfLiteOpDef OfLiteOpDef;
 typedef struct OfLiteDevice OfLiteDevice;
 
-OFLITE_API void OfLiteOperatorCreate(OfLiteDevice* device, const OfLiteOpDef* def,
+OFLITE_API void OfLiteOperatorCreate(OfLiteDevice* device,
+                                     const OfLiteOpDef* def,
                                      OfLiteOperator** op);
 OFLITE_API void OfLiteOperatorDestory(OfLiteOperator* op);
 

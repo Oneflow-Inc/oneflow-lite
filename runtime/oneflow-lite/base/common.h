@@ -44,10 +44,10 @@ limitations under the License.
 #define OFLITE_MAX(x, y) ((x) > (y) ? (x) : (y))
 #define OFLITE_MIN(x, y) ((x) > (y) ? (y) : (x))
 
-#define OFLITE_FAIL(...) \
-  { \
+#define OFLITE_FAIL(...)          \
+  {                               \
     fprintf(stderr, __VA_ARGS__); \
-    exit(1); \
+    exit(1);                      \
   }
 
 #endif  // ONEFLOW_LITE_BASE_COMMON_H_

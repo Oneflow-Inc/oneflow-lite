@@ -14,11 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "oneflow-lite/core/operator.h"
-#include "oneflow-lite/core/device.h"
 
+#include "oneflow-lite/core/device.h"
 #include "oneflow-lite/core/vtable_handle.h"
 
-OFLITE_API void OfLiteOperatorCreate(OfLiteDevice* device, const OfLiteOpDef* def,
+OFLITE_API void OfLiteOperatorCreate(OfLiteDevice* device,
+                                     const OfLiteOpDef* def,
                                      OfLiteOperator** op) {
   OfLiteDeviceCreateOp(device, def, op);
 }

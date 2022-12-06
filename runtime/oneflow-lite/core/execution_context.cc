@@ -78,7 +78,9 @@ static void OfLiteExecutionContextGetOrCreateDriver(
     }
   }
   if (context->driver_size >= OFLITE_DRIVER_NUM_LIMIT) {
-    OFLITE_FAIL("The number of drivers alive at the same time has reached the upper limit 8\n");
+    OFLITE_FAIL(
+        "The number of drivers alive at the same time has reached the upper "
+        "limit 8\n");
   }
   // create a new driver and reallocate space for drivers
   OfLiteDriverCreate(backend, driver);

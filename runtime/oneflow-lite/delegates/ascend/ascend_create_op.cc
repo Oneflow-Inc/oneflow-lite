@@ -14,12 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "oneflow-lite/delegates/ascend/ascend_create_op.h"
-#include "oneflow-lite/schemas/executable_generated.h"
+
 #include <stdio.h>
 
+#include "oneflow-lite/schemas/executable_generated.h"
+
 void OfLiteOpDefName(const OfLiteOpDef* def, OfLiteStringRef* name) {
-  flatbuffers_string_t flatc_name =
-      oneflow_lite_OpDef_name(reinterpret_cast<const oneflow_lite_OpDef_table_t>(def));
+  flatbuffers_string_t flatc_name = oneflow_lite_OpDef_name(
+      reinterpret_cast<const oneflow_lite_OpDef_table_t>(def));
   *name = OfLiteStringRef{flatc_name, flatbuffers_string_len(flatc_name)};
 }
 
@@ -28,8 +30,10 @@ OfLiteOperator* OfLiteAscendCreateOp(OfLiteDevice* device,
   OfLiteStringRef name;
   OfLiteOpDefName(def, &name);
 
-#define ASCEND_CREATE_OP_IF(type) \
-  if (OfLiteStringRefEqual(name, OfLiteStringRefCreate(#type))) { return OfLiteAscendCreate##type##Op(device, def); }
+#define ASCEND_CREATE_OP_IF(type)                                 \
+  if (OfLiteStringRefEqual(name, OfLiteStringRefCreate(#type))) { \
+    return OfLiteAscendCreate##type##Op(device, def);             \
+  }
 
   ASCEND_CREATE_OP_IF(copy);
 

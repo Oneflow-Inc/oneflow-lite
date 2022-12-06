@@ -35,7 +35,8 @@ void OfLiteExecutionUnitCreate(const OfLiteOpDef* op, OfLiteTensor** operands,
   (*execution_unit)->device_context = device_contexts[device];
 
   OfLitePopulateDeviceContext((*execution_unit)->device_context);
-  OfLiteOperatorCreate((*execution_unit)->device_context->device, op, &((*execution_unit)->op));
+  OfLiteOperatorCreate((*execution_unit)->device_context->device, op,
+                       &((*execution_unit)->op));
 
   flatbuffers_int32_vec_t inputs = oneflow_lite_OpDef_inputs(flatcc_op);
   OfLiteTensorSpanCreate(flatbuffers_int32_vec_len(inputs),

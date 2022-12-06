@@ -18,8 +18,8 @@ limitations under the License.
 
 #include "oneflow-lite/base/common.h"
 
-#define ACL_CHECK(status) \
-  if (status != ACL_ERROR_NONE) { \
+#define ACL_CHECK(status)                                      \
+  if (status != ACL_ERROR_NONE) {                              \
     OFLITE_FAIL("failed to call acl runtime api: %d", status); \
   }
 
