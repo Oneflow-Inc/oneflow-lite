@@ -19,17 +19,17 @@ limitations under the License.
 
 #include "oneflow-lite/base/memory.h"
 
-OFLITE_API void OfLiteDeviceContextCreate(OfLiteStringRef device_type,
+OFLITE_API void OfLiteDeviceContextCreate(OfLiteDriver* driver,
                                           size_t ordinal,
                                           OfLiteDeviceContext** context) {
   *context = reinterpret_cast<OfLiteDeviceContext*>(
       OfLiteMalloc(sizeof(OfLiteDeviceContext)));
   OfLiteDevice* device = nullptr;
-  OfLiteAllocator* device_alloca = nullptr;
-  OfLiteAllocator* device_host_alloca = nullptr;
-  OfLiteDeviceCreate(device_type, ordinal, &device);
-  OfLiteAllocatorCreate(device, OfLiteAllocatorType_Device, &device_alloca);
-  OfLiteAllocatorCreate(device, OfLiteAllocatorType_Device_Host,
+  OfLiteAlloca* device_alloca = nullptr;
+  OfLiteAlloca* device_host_alloca = nullptr;
+  OfLiteDeviceCreate(driver, ordinal, &device);
+  OfLiteAllocaCreate(device, OfLiteAllocaType_Device, &device_alloca);
+  OfLiteAllocaCreate(device, OfLiteAllocaType_Device_Host,
                         &device_host_alloca);
   (*context)->device = device;
   (*context)->device_alloca = device_alloca;
@@ -37,8 +37,8 @@ OFLITE_API void OfLiteDeviceContextCreate(OfLiteStringRef device_type,
 }
 
 OFLITE_API void OfLiteDeviceContextDestory(OfLiteDeviceContext* context) {
-  OfLiteAllocatorDestory(context->device_host_alloca);
-  OfLiteAllocatorDestory(context->device_alloca);
+  OfLiteAllocaDestory(context->device_host_alloca);
+  OfLiteAllocaDestory(context->device_alloca);
   OfLiteDeviceDestory(context->device);
   OfLiteFree(context);
 }

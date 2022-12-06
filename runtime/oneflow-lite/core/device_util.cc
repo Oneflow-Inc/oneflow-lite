@@ -17,8 +17,8 @@ limitations under the License.
 
 #include <stdlib.h>
 
-void OfLiteParseDeviceTypeAndOrdinal(OfLiteStringRef device,
-                                     OfLiteStringRef* device_type,
+void OfLiteParseBackendAndOrdinal(OfLiteStringRef device,
+                                     OfLiteStringRef* backend,
                                      size_t* ordinal) {
   size_t pos = 0;
   for (; pos < device.size; ++pos) {
@@ -26,7 +26,7 @@ void OfLiteParseDeviceTypeAndOrdinal(OfLiteStringRef device,
       break;
     }
   }
-  *device_type = OfLiteStringRefSubStr(device, 0, pos);
+  *backend = OfLiteStringRefSubStr(device, 0, pos);
   if (pos == device.size - 1) {
     // TODO(): invalid device
   } else if (pos == device.size) {

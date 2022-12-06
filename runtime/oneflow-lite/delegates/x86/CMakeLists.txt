@@ -1,6 +1,7 @@
 set(OFLITE_RUNTIME_DELEGATE_X86_SRCS
-  x86_allocator.cc
+  x86_alloca.cc
   x86_device.cc
+  x86_driver.cc
 )
 add_library(oneflow-lite-runtime-delegate-x86 OBJECT ${OFLITE_RUNTIME_DELEGATE_X86_SRCS})
 add_dependencies(oneflow-lite-runtime-delegate-x86 schemas)

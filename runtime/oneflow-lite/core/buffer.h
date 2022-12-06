@@ -16,11 +16,11 @@ limitations under the License.
 #ifndef ONEFLOW_LITE_CORE_BUFFER_H_
 #define ONEFLOW_LITE_CORE_BUFFER_H_
 
-#include "oneflow-lite/core/allocator.h"
+#include "oneflow-lite/core/alloca.h"
 
 typedef struct OfLiteBuffer OfLiteBuffer;
 
-void OfLiteBufferCreate(OfLiteAllocator* alloca, size_t bytesize,
+void OfLiteBufferCreate(OfLiteAlloca* alloca, size_t bytesize,
                         OfLiteBuffer** buffer);
 
 void OfLiteBufferDestory(OfLiteBuffer* buffer);
@@ -31,7 +31,7 @@ size_t OfLiteBufferByteSize(const OfLiteBuffer* buffer);
 
 uint8_t* OfLiteBufferBytes(const OfLiteBuffer* buffer);
 
-void OfLiteBufferAllocator(const OfLiteBuffer* buffer,
-                           const OfLiteAllocator** alloca);
+void OfLiteBufferAlloca(const OfLiteBuffer* buffer,
+                           const OfLiteAlloca** alloca);
 
 #endif  // ONEFLOW_LITE_CORE_BUFFER_H_

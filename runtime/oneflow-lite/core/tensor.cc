@@ -27,7 +27,7 @@ typedef struct OfLiteTensor {
 } OfLiteTensor;
 
 OFLITE_API void OfLiteTensorCreate(const OfLiteTensorDesc& desc,
-                                   OfLiteAllocator* alloca,
+                                   OfLiteAlloca* alloca,
                                    OfLiteTensor** tensor) {
   size_t size = OfLiteDimsCount(desc.dims) * OfLiteDataTypeByteSize(desc.dtype);
   OfLiteTensor* tensor_impl =
@@ -75,9 +75,9 @@ OFLITE_API void OfLiteTensorLayout(const OfLiteTensor* tensor,
   *layout = tensor->desc.layout;
 }
 
-OFLITE_API void OfLiteTensorAllocator(const OfLiteTensor* tensor,
-                                      const OfLiteAllocator** alloca) {
-  OfLiteBufferAllocator(tensor->buffer, alloca);
+OFLITE_API void OfLiteTensorAlloca(const OfLiteTensor* tensor,
+                                      const OfLiteAlloca** alloca) {
+  OfLiteBufferAlloca(tensor->buffer, alloca);
 }
 
 OFLITE_API void* OfLiteTensorData(const OfLiteTensor* tensor) {

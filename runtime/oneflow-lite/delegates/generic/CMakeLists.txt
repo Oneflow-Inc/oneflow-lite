@@ -1,5 +1,5 @@
 set(OFLITE_RUNTIME_DELEGATE_GENERIC_SRCS
-  generic_allocator.cc
+  generic_alloca.cc
 )
 add_library(oneflow-lite-runtime-delegate-generic OBJECT
   ${OFLITE_RUNTIME_DELEGATE_GENERIC_SRCS})

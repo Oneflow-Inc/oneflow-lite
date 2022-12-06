@@ -35,6 +35,8 @@ OFLITE_API OfLiteStringRef OfLiteStringRefCreate(const char* str);
 OFLITE_API OfLiteStringRef OfLiteStringRefSubStr(OfLiteStringRef value,
                                                  size_t pos, size_t len);
 
+OFLITE_API bool OfLiteStringRefEqual(OfLiteStringRef lhs, OfLiteStringRef rhs);
+
 #ifdef __cplusplus
 }  // extern "C"
 #endif  // __cplusplus

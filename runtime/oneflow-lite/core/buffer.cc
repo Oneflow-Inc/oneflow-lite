@@ -20,17 +20,17 @@ limitations under the License.
 
 typedef struct OfLiteBuffer {
   OfLiteRefCount refcount;
-  OfLiteAllocator* alloca;
+  OfLiteAlloca* alloca;
   uint8_t* bytes;
   size_t bytesize;
 } OfLiteBuffer;
 
-void OfLiteBufferCreate(OfLiteAllocator* alloca, size_t bytesize,
+void OfLiteBufferCreate(OfLiteAlloca* alloca, size_t bytesize,
                         OfLiteBuffer** buffer) {
   *buffer = reinterpret_cast<OfLiteBuffer*>(OfLiteMalloc(sizeof(OfLiteBuffer)));
   OfLiteRefCountInitialize(&(buffer[0]->refcount), 1);
   buffer[0]->alloca = alloca;
-  OfLiteAllocatorMalloc(alloca, bytesize,
+  OfLiteAllocaMalloc(alloca, bytesize,
                         reinterpret_cast<void**>(&buffer[0]->bytes));
   buffer[0]->bytesize = bytesize;
 }
@@ -38,7 +38,7 @@ void OfLiteBufferCreate(OfLiteAllocator* alloca, size_t bytesize,
 void OfLiteBufferDestory(OfLiteBuffer* buffer) {
   OfLiteRefCountDecrease(&buffer->refcount);
   if (OfLiteRefCountEqual(buffer->refcount, 0)) {
-    OfLiteAllocatorFree(buffer->alloca, buffer->bytes);
+    OfLiteAllocaFree(buffer->alloca, buffer->bytes);
   }
 }
 
@@ -52,7 +52,7 @@ size_t OfLiteBufferByteSize(const OfLiteBuffer* buffer) {
 
 uint8_t* OfLiteBufferBytes(const OfLiteBuffer* buffer) { return buffer->bytes; }
 
-void OfLiteBufferAllocator(const OfLiteBuffer* buffer,
-                           const OfLiteAllocator** alloca) {
+void OfLiteBufferAlloca(const OfLiteBuffer* buffer,
+                           const OfLiteAlloca** alloca) {
   *alloca = buffer->alloca;
 }

@@ -13,14 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include "oneflow-lite/core/allocator.h"
-#include "oneflow-lite/delegates/generic/generic_allocator.h"
+#ifndef ONEFLOW_LITE_DELEGATES_ASCEND_ASCEND_DEVICE_H_
+#define ONEFLOW_LITE_DELEGATES_ASCEND_ASCEND_DEVICE_H_
 
-extern const OfLiteDeviceId OfLiteCUDADeviceId;
+#include "oneflow-lite/core/device.h"
 
-static OfLiteAllocator* OfLiteCUDAAllocatorCreate(OfLiteDevice* device) {
-  return OfLiteGenericAllocatorCreate(device);
-}
+static const char* OfLiteAscendIdentifier = "ascend";
 
-OFLITE_REGISTER_ALLOCATOR(OfLiteCUDADeviceId, OfLiteAllocatorType_Device,
-                          OfLiteCUDAAllocatorCreate);
+OfLiteDevice* OfLiteAscendDeviceCreate(size_t ordinal);
+
+#endif  // ONEFLOW_LITE_DELEGATES_ASCEND_ASCEND_DEVICE_H_

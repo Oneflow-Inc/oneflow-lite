@@ -13,14 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef ONEFLOW_LITE_CORE_DEVICE_UTIL_H_
-#define ONEFLOW_LITE_CORE_DEVICE_UTIL_H_
+#ifndef ONEFLOW_LITE_DELAGATES_ASCEND_ASCEND_UTILS_H_
+#define ONEFLOW_LITE_DELAGATES_ASCEND_ASCEND_UTILS_H_
 
-#include "oneflow-lite/base/common.h"
-#include "oneflow-lite/base/stringref.h"
+#include <assert.h>
 
-void OfLiteParseBackendAndOrdinal(OfLiteStringRef device,
-                                     OfLiteStringRef* backend,
-                                     size_t* ordinal);
+#define ACL_CHECK(status) \
+  assert((status) == ACL_ERROR_NONE && "failed to call acl runtime api")
 
-#endif  // ONEFLOW_LITE_CORE_DEVICE_UTIL_H_
+#endif  // ONEFLOW_LITE_DELAGATES_ASCEND_ASCEND_UTILS_H_

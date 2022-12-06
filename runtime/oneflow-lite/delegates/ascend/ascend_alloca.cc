@@ -13,14 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include "oneflow-lite/core/allocator.h"
-#include "oneflow-lite/delegates/generic/generic_allocator.h"
+#include "oneflow-lite/delegates/ascend/ascend_alloca.h"
 
-extern const OfLiteDeviceId OfLiteX86DeviceId;
+#include "oneflow-lite/core/alloca.h"
+#include "oneflow-lite/delegates/generic/generic_alloca.h"
 
-static OfLiteAllocator* OfLiteX86AllocatorCreate(OfLiteDevice* device) {
-  return OfLiteGenericAllocatorCreate(device);
+OfLiteAlloca* OfLiteAscendAllocaCreate(OfLiteDevice* device, OfLiteAllocaType alloca_type) {
+  if (alloca_type == OfLiteAllocaType_Device) {
+    return OfLiteGenericAllocaCreate(device);
+  }
+  OfLiteAlloca* host_alloca = nullptr;
+  OfLiteHostAllocaCreate(&host_alloca);
+  return host_alloca;
 }
-
-OFLITE_REGISTER_ALLOCATOR(OfLiteX86DeviceId, OfLiteAllocatorType_Device,
-                          OfLiteX86AllocatorCreate);

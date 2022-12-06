@@ -20,7 +20,7 @@ limitations under the License.
 #include "oneflow-lite/base/datatype.h"
 #include "oneflow-lite/base/dims.h"
 #include "oneflow-lite/base/layout.h"
-#include "oneflow-lite/core/allocator.h"
+#include "oneflow-lite/core/alloca.h"
 #include "oneflow-lite/core/buffer.h"
 
 #ifdef __cplusplus
@@ -41,7 +41,7 @@ typedef struct OfLiteTensorSpan {
 } OfLiteTensorSpan;
 
 OFLITE_API void OfLiteTensorCreate(const OfLiteTensorDesc& desc,
-                                   OfLiteAllocator* alloca,
+                                   OfLiteAlloca* alloca,
                                    OfLiteTensor** tensor);
 
 OFLITE_API void OfLiteTensorCreateFromBuffer(const OfLiteTensorDesc& desc,
@@ -56,8 +56,8 @@ OFLITE_API void OfLiteTensorDataType(const OfLiteTensor* tensor,
                                      OfLiteDataType* dtype);
 OFLITE_API void OfLiteTensorLayout(const OfLiteTensor* tensor,
                                    OfLiteLayout* layout);
-OFLITE_API void OfLiteTensorAllocator(const OfLiteTensor* tensor,
-                                      const OfLiteAllocator** alloca);
+OFLITE_API void OfLiteTensorAlloca(const OfLiteTensor* tensor,
+                                      const OfLiteAlloca** alloca);
 
 OFLITE_API void OfLiteTensorResize(OfLiteTensor* tensor,
                                    const OfLiteDims& dims);

@@ -13,14 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef ONEFLOW_LITE_CORE_DEVICE_UTIL_H_
-#define ONEFLOW_LITE_CORE_DEVICE_UTIL_H_
+#include "oneflow-lite/core/alloca.h"
+#include "oneflow-lite/core/device.h"
 
-#include "oneflow-lite/base/common.h"
-#include "oneflow-lite/base/stringref.h"
-
-void OfLiteParseBackendAndOrdinal(OfLiteStringRef device,
-                                     OfLiteStringRef* backend,
-                                     size_t* ordinal);
-
-#endif  // ONEFLOW_LITE_CORE_DEVICE_UTIL_H_
+OFLITE_API OfLiteAlloca* OfLiteGenericAllocaCreate(OfLiteDevice* device);

@@ -13,42 +13,42 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include "oneflow-lite/core/allocator.h"
+#include "oneflow-lite/core/alloca.h"
 #include "oneflow-lite/core/device.h"
 #include "oneflow-lite/core/vtable_handle.h"
 
-typedef struct OfLiteGenericAllocator {
+typedef struct OfLiteGenericAlloca {
   OfLiteVTableHandle handle;
   OfLiteDevice* device;
-} OfLiteGenericAllocator;
+} OfLiteGenericAlloca;
 
-static void OfLiteGenericAllocatorDestory(OfLiteAllocator* alloca) {
-  delete reinterpret_cast<OfLiteGenericAllocator*>(alloca);
+static void OfLiteGenericAllocaDestory(OfLiteAlloca* alloca) {
+  delete reinterpret_cast<OfLiteGenericAlloca*>(alloca);
 }
 
-static void OfLiteGenericAllocatorMalloc(OfLiteAllocator* alloca, size_t size,
+static void OfLiteGenericAllocaMalloc(OfLiteAlloca* alloca, size_t size,
                                          void** ptr) {
   OfLiteDevice* device =
-      reinterpret_cast<OfLiteGenericAllocator*>(alloca)->device;
+      reinterpret_cast<OfLiteGenericAlloca*>(alloca)->device;
   OfLiteDeviceMalloc(device, size, ptr);
 }
 
-static void OfLiteGenericAllocatorFree(OfLiteAllocator* alloca, void* ptr) {
+static void OfLiteGenericAllocaFree(OfLiteAlloca* alloca, void* ptr) {
   OfLiteDevice* device =
-      reinterpret_cast<OfLiteGenericAllocator*>(alloca)->device;
+      reinterpret_cast<OfLiteGenericAlloca*>(alloca)->device;
   OfLiteDeviceFree(device, ptr);
 }
 
-static OfLiteAllocatorVTable vtable = {
-    .destory = OfLiteGenericAllocatorDestory,
-    .malloc = OfLiteGenericAllocatorMalloc,
+static OfLiteAllocaVTable vtable = {
+    .destory = OfLiteGenericAllocaDestory,
+    .malloc = OfLiteGenericAllocaMalloc,
     .aligned_alloc = 0,
-    .free = OfLiteGenericAllocatorFree,
+    .free = OfLiteGenericAllocaFree,
 };
 
-OFLITE_API OfLiteAllocator* OfLiteGenericAllocatorCreate(OfLiteDevice* device) {
-  OfLiteGenericAllocator* alloca = new OfLiteGenericAllocator;
+OFLITE_API OfLiteAlloca* OfLiteGenericAllocaCreate(OfLiteDevice* device) {
+  OfLiteGenericAlloca* alloca = new OfLiteGenericAlloca;
   alloca->handle.vtable = &vtable;
   alloca->device = device;
-  return reinterpret_cast<OfLiteAllocator*>(alloca);
+  return reinterpret_cast<OfLiteAlloca*>(alloca);
 }

@@ -25,8 +25,14 @@ limitations under the License.
 #include "oneflow-lite/core/operator.h"
 #include "oneflow-lite/schemas/executable_generated.h"
 
+static const int OFLITE_DRIVER_NUM_LIMIT = 8;
+
 typedef struct OfLiteExecutionContext {
-  OfLiteAllocator* host_alloca;
+  OfLiteAlloca* host_alloca;
+
+  size_t driver_size;
+  OfLiteDriver* drivers[OFLITE_DRIVER_NUM_LIMIT];
+
   OfLiteDeviceContext** device_contexts;
   size_t device_context_size;
 
@@ -59,21 +65,43 @@ static void OfLiteTensorDescCreateFromTensorDef(const OfLiteTensorDef* tensor,
   }
 }
 
+static void OfLiteExecutionContextGetOrCreateDriver(OfLiteExecutionContext* context, OfLiteStringRef backend, OfLiteDriver** driver) {
+  for (size_t i = 0; i < context->driver_size; ++i) {
+    if (context->drivers[i]) {
+      OfLiteStringRef identifier;
+      OfLiteDriverQueryIdentifier(context->drivers[i], &identifier);
+      if (OfLiteStringRefEqual(backend, identifier)) {
+        *driver = context->drivers[i];
+        return;
+      }
+    }
+  }
+  assert(context->driver_size < OFLITE_DRIVER_NUM_LIMIT && "the max number of drivers is 8");
+  // create a new driver and reallocate space for drivers
+  OfLiteDriverCreate(backend, driver);
+  context->drivers[context->driver_size] = *driver;
+  ++context->driver_size;
+}
+
 static void OfLiteExecutionContextCreateImpl(
     const OfLiteExecutable* executable, const OfLiteExecutionOption& option,
     OfLiteExecutionContext* context) {
-  OfLiteHostAllocatorCreate(&context->host_alloca);
+  context->driver_size = 0;
+  OfLiteHostAllocaCreate(&context->host_alloca);
+
   size_t device_size = 0;
   OfLiteExecutableDeviceSize(executable, &device_size);
   context->device_contexts = reinterpret_cast<OfLiteDeviceContext**>(
       OfLiteMalloc(device_size * sizeof(OfLiteDeviceContext*)));
   for (size_t i = 0; i < device_size; ++i) {
     OfLiteStringRef device;
-    OfLiteStringRef device_type;
+    OfLiteStringRef backend;
     size_t ordinal = 0;
     OfLiteExecutableDevice(executable, i, &device);
-    OfLiteParseDeviceTypeAndOrdinal(device, &device_type, &ordinal);
-    OfLiteDeviceContextCreate(device_type, ordinal,
+    OfLiteParseBackendAndOrdinal(device, &backend, &ordinal);
+    OfLiteDriver* driver = nullptr;
+    OfLiteExecutionContextGetOrCreateDriver(context, backend, &driver);
+    OfLiteDeviceContextCreate(driver, ordinal,
                               context->device_contexts + i);
   }
   context->device_context_size = device_size;
@@ -177,6 +205,10 @@ OFLITE_API void OfLiteExecutionContextDestory(OfLiteExecutionContext* context) {
     OfLiteDeviceContextDestory(context->device_contexts[i]);
   }
   OfLiteFree(context->device_contexts);
+  for (size_t i = 0; i < context->driver_size; ++i) {
+    OfLiteDriverDestory(context->drivers[i]);
+  }
+  OfLiteAllocaDestory(context->host_alloca);
 }
 
 OFLITE_API void OfLiteExecutionContextInputSize(

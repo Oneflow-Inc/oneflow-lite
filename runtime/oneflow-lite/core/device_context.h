@@ -20,16 +20,17 @@ limitations under the License.
 extern "C" {
 #endif  // __cplusplus
 
-#include "oneflow-lite/core/allocator.h"
+#include "oneflow-lite/core/alloca.h"
 #include "oneflow-lite/core/device.h"
+#include "oneflow-lite/core/driver.h"
 
 typedef struct OfLiteDeviceContext {
   OfLiteDevice* device;
-  OfLiteAllocator* device_alloca;
-  OfLiteAllocator* device_host_alloca;
+  OfLiteAlloca* device_alloca;
+  OfLiteAlloca* device_host_alloca;
 } OfLiteDeviceContext;
 
-OFLITE_API void OfLiteDeviceContextCreate(OfLiteStringRef device_type,
+OFLITE_API void OfLiteDeviceContextCreate(OfLiteDriver* driver,
                                           size_t ordinal,
                                           OfLiteDeviceContext** context);
 

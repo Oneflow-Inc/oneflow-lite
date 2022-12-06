@@ -13,7 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include "oneflow-lite/core/allocator.h"
+#ifndef ONEFLOW_LITE_DELEGATES_ASCEND_ASCEND_ALLOCA_H_
+#define ONEFLOW_LITE_DELEGATES_ASCEND_ASCEND_ALLOCA_H_
+
+#include "oneflow-lite/core/alloca.h"
 #include "oneflow-lite/core/device.h"
 
-OFLITE_API OfLiteAllocator* OfLiteGenericAllocatorCreate(OfLiteDevice* device);
+OfLiteAlloca* OfLiteAscendAllocaCreate(OfLiteDevice* device, OfLiteAllocaType alloca_type);
+
+#endif  // ONEFLOW_LITE_DELEGATES_ASCEND_ASCEND_ALLOCA_H_

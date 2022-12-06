@@ -13,13 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#include "oneflow-lite/delegates/x86/x86_device.h"
+#include "oneflow-lite/delegates/x86/x86_alloca.h"
+
 #include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/base/stringref.h"
 #include "oneflow-lite/core/device.h"
 #include "oneflow-lite/core/vtable_handle.h"
-
-extern const OfLiteDeviceId OfLiteX86DeviceId = 0;
-static const char* OfLiteX86DeviceName = "x86";
 
 typedef struct OfLiteX86Device {
   OfLiteVTableHandle handle;
@@ -28,13 +28,9 @@ typedef struct OfLiteX86Device {
 
 void OfLiteX86DeviceDestory(OfLiteDevice* device) { OfLiteFree(device); }
 
-void OfLiteX86DeviceQueryId(const OfLiteDevice* device, OfLiteDeviceId* id) {
-  *id = OfLiteX86DeviceId;
-}
-
 void OfLiteX86DeviceQueryName(const OfLiteDevice* device,
                               OfLiteStringRef* name) {
-  *name = OfLiteStringRefCreate(OfLiteX86DeviceName);
+  *name = OfLiteStringRefCreate(OfLiteX86Identifier);
 }
 
 void OfLiteX86DeviceQueryOrdinal(const OfLiteDevice* device, size_t* ordinal) {
@@ -44,6 +40,10 @@ void OfLiteX86DeviceQueryOrdinal(const OfLiteDevice* device, size_t* ordinal) {
 void OfLiteX86DeviceCreateEvent(OfLiteDevice* device, OfLiteEvent** event) {}
 
 void OfLiteX86DeviceCreateStream(OfLiteDevice* device, OfLiteStream** stream) {}
+
+void OfLiteX86DeviceCreateAlloca(OfLiteDevice* device, OfLiteAllocaType alloca_type, OfLiteAlloca** alloca) {
+  *alloca = OfLiteX86AllocaCreate(device, alloca_type);
+}
 
 void OfLiteX86DeviceMalloc(OfLiteDevice* device, size_t size, void** ptr) {
   *ptr = OfLiteMalloc(size);
@@ -61,23 +61,21 @@ void OfLiteX86DeviceFreeHost(OfLiteDevice* device, void* ptr) {
 
 static OfLiteDeviceVTable vtable = {
     .destory = OfLiteX86DeviceDestory,
-    .query_id = OfLiteX86DeviceQueryId,
     .query_name = OfLiteX86DeviceQueryName,
     .query_ordinal = OfLiteX86DeviceQueryOrdinal,
     .create_event = OfLiteX86DeviceCreateEvent,
     .create_stream = OfLiteX86DeviceCreateStream,
+    .create_alloca = OfLiteX86DeviceCreateAlloca,
     .malloc = OfLiteX86DeviceMalloc,
     .free = OfLiteX86DeviceFree,
     .malloc_host = OfLiteX86DeviceMallocHost,
     .free_host = OfLiteX86DeviceFreeHost,
 };
 
-static OfLiteDevice* OfLiteX86DeviceCreate(size_t ordinal) {
+OfLiteDevice* OfLiteX86DeviceCreate(size_t ordinal) {
   OfLiteX86Device* device =
       reinterpret_cast<OfLiteX86Device*>(OfLiteMalloc(sizeof(OfLiteX86Device)));
   device->handle.vtable = &vtable;
   device->ordinal = ordinal;
   return reinterpret_cast<OfLiteDevice*>(device);
 }
-
-OFLITE_REGISTER_HOST_DEVICE(OfLiteX86DeviceName, OfLiteX86DeviceCreate);

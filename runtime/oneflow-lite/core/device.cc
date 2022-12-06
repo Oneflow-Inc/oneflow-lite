@@ -14,40 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "oneflow-lite/core/device.h"
+#include "oneflow-lite/core/driver.h"
 
 #include <assert.h>
 
 #include "oneflow-lite/core/vtable_handle.h"
 
-static const size_t OFLITE_DEVICE_COUNT_LIMIT = 64;
-static const size_t OFLITE_DEVICE_TYPE_LENGTH_LIMIT = 128;
-
-typedef struct OfLiteDeviceFactoryItem {
-  char type[OFLITE_DEVICE_TYPE_LENGTH_LIMIT];
-  OfLiteDeviceFactory factory;
-} OfLiteDeviceFactoryItem;
-
-typedef struct OfLiteDeviceRegistry {
-  size_t size;
-  OfLiteDeviceFactoryItem items[OFLITE_DEVICE_COUNT_LIMIT];
-} OfLiteDeviceRegistry;
-
-OfLiteDeviceRegistry* GetOfLiteDeviceRegistry() {
-  static OfLiteDeviceRegistry oflite_device_registry{.size = 0};
-  return &oflite_device_registry;
-}
-
-OFLITE_API void OfLiteDeviceCreate(OfLiteStringRef type, size_t ordinal,
+OFLITE_API void OfLiteDeviceCreate(OfLiteDriver* driver, size_t ordinal,
                                    OfLiteDevice** device) {
-  OfLiteDeviceRegistry* registry = GetOfLiteDeviceRegistry();
-  for (size_t i = 0; i < registry->size; ++i) {
-    const OfLiteDeviceFactoryItem& item = registry->items[i];
-    if (0 == strncmp(type.data, item.type, type.size)) {
-      *device = item.factory(ordinal);
-      return;
-    }
-  }
-  assert(false && "failed to create a device");
+  OfLiteDriverCreateDevice(driver, ordinal, device);
 }
 
 #define DEVICE_VTABLE_CAST(device)       \
@@ -56,11 +31,6 @@ OFLITE_API void OfLiteDeviceCreate(OfLiteStringRef type, size_t ordinal,
 
 OFLITE_API void OfLiteDeviceDestory(OfLiteDevice* device) {
   DEVICE_VTABLE_CAST(device)->destory(device);
-}
-
-OFLITE_API void OfLiteDeviceQueryId(const OfLiteDevice* device,
-                                    OfLiteDeviceId* id) {
-  DEVICE_VTABLE_CAST(device)->query_id(device, id);
 }
 
 OFLITE_API void OfLiteDeviceQueryName(const OfLiteDevice* device,
@@ -83,6 +53,10 @@ OFLITE_API void OfLiteDeviceCreateStream(OfLiteDevice* device,
   DEVICE_VTABLE_CAST(device)->create_stream(device, stream);
 }
 
+OFLITE_API void OfLiteDeviceCreateAlloca(OfLiteDevice* device, OfLiteAllocaType alloca_type, OfLiteAlloca** alloca) {
+  DEVICE_VTABLE_CAST(device)->create_alloca(device, alloca_type, alloca);
+}
+
 OFLITE_API void OfLiteDeviceMalloc(OfLiteDevice* device, size_t size,
                                    void** ptr) {
   DEVICE_VTABLE_CAST(device)->malloc(device, size, ptr);
@@ -102,17 +76,3 @@ OFLITE_API void OfLiteDeviceFreeHost(OfLiteDevice* device, void* ptr) {
 }
 
 #undef DEVICE_VTABLE_CAST
-
-OFLITE_API void OfLiteDeviceRegisterFactory(OfLiteStringRef type,
-                                            OfLiteDeviceFactory factory) {
-  assert(type.size < OFLITE_DEVICE_TYPE_LENGTH_LIMIT &&
-         "the length of device type name should less than 128");
-  OfLiteDeviceRegistry* registry = GetOfLiteDeviceRegistry();
-  assert(registry->size < OFLITE_DEVICE_COUNT_LIMIT);
-
-  OfLiteDeviceFactoryItem* item = &registry->items[registry->size];
-  strncpy(item->type, type.data, type.size);
-  item->type[type.size] = 0;
-  item->factory = factory;
-  registry->size += 1;
-}

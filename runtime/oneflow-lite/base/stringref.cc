@@ -15,6 +15,8 @@ limitations under the License.
 */
 #include "oneflow-lite/base/stringref.h"
 
+#include <string.h>
+
 OFLITE_API OfLiteStringRef OfLiteStringRefCreate(const char* str) {
   OfLiteStringRef strref = {str, strlen(str)};
   return strref;
@@ -26,4 +28,9 @@ OFLITE_API OfLiteStringRef OfLiteStringRefSubStr(OfLiteStringRef value,
   len = OFLITE_MIN(len, value.size - pos);
   OfLiteStringRef strref = {value.data + pos, len};
   return strref;
+}
+
+OFLITE_API bool OfLiteStringRefEqual(OfLiteStringRef lhs, OfLiteStringRef rhs) {
+  if (lhs.size != rhs.size) { return false; }
+  return 0 == strncmp(lhs.data, rhs.data, lhs.size);
 }
