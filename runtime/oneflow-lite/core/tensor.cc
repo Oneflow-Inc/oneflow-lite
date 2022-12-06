@@ -76,7 +76,7 @@ OFLITE_API void OfLiteTensorLayout(const OfLiteTensor* tensor,
 }
 
 OFLITE_API void OfLiteTensorAlloca(const OfLiteTensor* tensor,
-                                      const OfLiteAlloca** alloca) {
+                                   const OfLiteAlloca** alloca) {
   OfLiteBufferAlloca(tensor->buffer, alloca);
 }
 

@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "oneflow-lite/core/device.h"
-#include "oneflow-lite/core/driver.h"
 
 #include <assert.h>
 
+#include "oneflow-lite/core/driver.h"
 #include "oneflow-lite/core/vtable_handle.h"
 
 OFLITE_API void OfLiteDeviceCreate(OfLiteDriver* driver, size_t ordinal,
@@ -53,7 +53,9 @@ OFLITE_API void OfLiteDeviceCreateStream(OfLiteDevice* device,
   DEVICE_VTABLE_CAST(device)->create_stream(device, stream);
 }
 
-OFLITE_API void OfLiteDeviceCreateAlloca(OfLiteDevice* device, OfLiteAllocaType alloca_type, OfLiteAlloca** alloca) {
+OFLITE_API void OfLiteDeviceCreateAlloca(OfLiteDevice* device,
+                                         OfLiteAllocaType alloca_type,
+                                         OfLiteAlloca** alloca) {
   DEVICE_VTABLE_CAST(device)->create_alloca(device, alloca_type, alloca);
 }
 

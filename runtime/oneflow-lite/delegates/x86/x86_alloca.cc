@@ -18,7 +18,8 @@ limitations under the License.
 #include "oneflow-lite/core/alloca.h"
 #include "oneflow-lite/delegates/generic/generic_alloca.h"
 
-OfLiteAlloca* OfLiteX86AllocaCreate(OfLiteDevice* device, OfLiteAllocaType alloca_type) {
+OfLiteAlloca* OfLiteX86AllocaCreate(OfLiteDevice* device,
+                                    OfLiteAllocaType alloca_type) {
   if (alloca_type == OfLiteAllocaType_Device) {
     return OfLiteGenericAllocaCreate(device);
   }

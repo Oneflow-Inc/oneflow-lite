@@ -18,8 +18,8 @@ limitations under the License.
 #include <assert.h>
 
 #include "oneflow-lite/base/memory.h"
-#include "oneflow-lite/core/vtable_handle.h"
 #include "oneflow-lite/core/device.h"
+#include "oneflow-lite/core/vtable_handle.h"
 
 typedef struct OfLiteHostAlloca {
   OfLiteAllocaVTable* vtable;
@@ -30,13 +30,12 @@ static void OfLiteHostAllocaDestory(OfLiteAlloca* alloca) {
 }
 
 static void OfLiteHostAllocaMalloc(OfLiteAlloca* alloca, size_t size,
-                                      void** ptr) {
+                                   void** ptr) {
   *ptr = OfLiteMalloc(size);
 }
 
-static void OfLiteHostAllocaAlignedAlloc(OfLiteAlloca* alloca,
-                                            size_t alignment, size_t size,
-                                            void** ptr) {
+static void OfLiteHostAllocaAlignedAlloc(OfLiteAlloca* alloca, size_t alignment,
+                                         size_t size, void** ptr) {
   *ptr = OfLiteAlignedAlloc(alignment, size);
 }
 
@@ -57,13 +56,12 @@ OFLITE_API void OfLiteHostAllocaCreate(OfLiteAlloca** alloca) {
   *alloca = reinterpret_cast<OfLiteAlloca*>(host_alloca);
 }
 
-OFLITE_API void OfLiteAllocaCreate(OfLiteDevice* device,
-                                      OfLiteAllocaType type,
-                                      OfLiteAlloca** alloca) {
+OFLITE_API void OfLiteAllocaCreate(OfLiteDevice* device, OfLiteAllocaType type,
+                                   OfLiteAlloca** alloca) {
   OfLiteDeviceCreateAlloca(device, type, alloca);
 }
 
-#define ALLOCA_VTABLE_CAST(alloca) \
+#define ALLOCA_VTABLE_CAST(alloca)       \
   reinterpret_cast<OfLiteAllocaVTable*>( \
       reinterpret_cast<const OfLiteVTableHandle*>(alloca)->vtable)
 
@@ -72,7 +70,7 @@ OFLITE_API void OfLiteAllocaDestory(OfLiteAlloca* alloca) {
 }
 
 OFLITE_API void OfLiteAllocaMalloc(OfLiteAlloca* alloca, size_t size,
-                                      void** ptr) {
+                                   void** ptr) {
   ALLOCA_VTABLE_CAST(alloca)->malloc(alloca, size, ptr);
 }
 
@@ -80,9 +78,8 @@ OFLITE_API void OfLiteAllocaFree(OfLiteAlloca* alloca, void* ptr) {
   ALLOCA_VTABLE_CAST(alloca)->free(alloca, ptr);
 }
 
-OFLITE_API void OfLiteAllocaAlignedAlloc(OfLiteAlloca* alloca,
-                                            size_t alignment, size_t size,
-                                            void** ptr) {
+OFLITE_API void OfLiteAllocaAlignedAlloc(OfLiteAlloca* alloca, size_t alignment,
+                                         size_t size, void** ptr) {
   ALLOCA_VTABLE_CAST(alloca)->aligned_alloc(alloca, alignment, size, ptr);
 }
 

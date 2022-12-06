@@ -19,6 +19,7 @@ limitations under the License.
 #include "oneflow-lite/core/alloca.h"
 #include "oneflow-lite/core/device.h"
 
-OfLiteAlloca* OfLiteX86AllocaCreate(OfLiteDevice* device, OfLiteAllocaType alloca_type);
+OfLiteAlloca* OfLiteX86AllocaCreate(OfLiteDevice* device,
+                                    OfLiteAllocaType alloca_type);
 
 #endif  // ONEFLOW_LITE_DELEGATES_X86_X86_ALLOCA_H_

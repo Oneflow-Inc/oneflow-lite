@@ -27,15 +27,13 @@ static void OfLiteGenericAllocaDestory(OfLiteAlloca* alloca) {
 }
 
 static void OfLiteGenericAllocaMalloc(OfLiteAlloca* alloca, size_t size,
-                                         void** ptr) {
-  OfLiteDevice* device =
-      reinterpret_cast<OfLiteGenericAlloca*>(alloca)->device;
+                                      void** ptr) {
+  OfLiteDevice* device = reinterpret_cast<OfLiteGenericAlloca*>(alloca)->device;
   OfLiteDeviceMalloc(device, size, ptr);
 }
 
 static void OfLiteGenericAllocaFree(OfLiteAlloca* alloca, void* ptr) {
-  OfLiteDevice* device =
-      reinterpret_cast<OfLiteGenericAlloca*>(alloca)->device;
+  OfLiteDevice* device = reinterpret_cast<OfLiteGenericAlloca*>(alloca)->device;
   OfLiteDeviceFree(device, ptr);
 }
 

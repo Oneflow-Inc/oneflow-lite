@@ -20,7 +20,6 @@ limitations under the License.
 #include "oneflow-lite/base/stringref.h"
 
 void OfLiteParseBackendAndOrdinal(OfLiteStringRef device,
-                                     OfLiteStringRef* backend,
-                                     size_t* ordinal);
+                                  OfLiteStringRef* backend, size_t* ordinal);
 
 #endif  // ONEFLOW_LITE_CORE_DEVICE_UTIL_H_

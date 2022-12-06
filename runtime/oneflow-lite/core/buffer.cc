@@ -31,7 +31,7 @@ void OfLiteBufferCreate(OfLiteAlloca* alloca, size_t bytesize,
   OfLiteRefCountInitialize(&(buffer[0]->refcount), 1);
   buffer[0]->alloca = alloca;
   OfLiteAllocaMalloc(alloca, bytesize,
-                        reinterpret_cast<void**>(&buffer[0]->bytes));
+                     reinterpret_cast<void**>(&buffer[0]->bytes));
   buffer[0]->bytesize = bytesize;
 }
 
@@ -53,6 +53,6 @@ size_t OfLiteBufferByteSize(const OfLiteBuffer* buffer) {
 uint8_t* OfLiteBufferBytes(const OfLiteBuffer* buffer) { return buffer->bytes; }
 
 void OfLiteBufferAlloca(const OfLiteBuffer* buffer,
-                           const OfLiteAlloca** alloca) {
+                        const OfLiteAlloca** alloca) {
   *alloca = buffer->alloca;
 }

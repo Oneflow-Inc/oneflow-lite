@@ -41,8 +41,7 @@ typedef struct OfLiteTensorSpan {
 } OfLiteTensorSpan;
 
 OFLITE_API void OfLiteTensorCreate(const OfLiteTensorDesc& desc,
-                                   OfLiteAlloca* alloca,
-                                   OfLiteTensor** tensor);
+                                   OfLiteAlloca* alloca, OfLiteTensor** tensor);
 
 OFLITE_API void OfLiteTensorCreateFromBuffer(const OfLiteTensorDesc& desc,
                                              OfLiteBuffer* buffer,
@@ -57,7 +56,7 @@ OFLITE_API void OfLiteTensorDataType(const OfLiteTensor* tensor,
 OFLITE_API void OfLiteTensorLayout(const OfLiteTensor* tensor,
                                    OfLiteLayout* layout);
 OFLITE_API void OfLiteTensorAlloca(const OfLiteTensor* tensor,
-                                      const OfLiteAlloca** alloca);
+                                   const OfLiteAlloca** alloca);
 
 OFLITE_API void OfLiteTensorResize(OfLiteTensor* tensor,
                                    const OfLiteDims& dims);

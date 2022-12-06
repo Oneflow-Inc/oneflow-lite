@@ -49,7 +49,9 @@ OFLITE_API void OfLiteDeviceCreateEvent(OfLiteDevice* device,
 OFLITE_API void OfLiteDeviceCreateStream(OfLiteDevice* device,
                                          OfLiteStream** stream);
 
-OFLITE_API void OfLiteDeviceCreateAlloca(OfLiteDevice* device, OfLiteAllocaType alloca_type, OfLiteAlloca** alloca);
+OFLITE_API void OfLiteDeviceCreateAlloca(OfLiteDevice* device,
+                                         OfLiteAllocaType alloca_type,
+                                         OfLiteAlloca** alloca);
 
 OFLITE_API void OfLiteDeviceMalloc(OfLiteDevice* device, size_t size,
                                    void** ptr);
@@ -67,7 +69,8 @@ typedef struct OfLiteDeviceVTable {
   void (*query_ordinal)(const OfLiteDevice* device, size_t* ordinal);
   void (*create_event)(OfLiteDevice* device, OfLiteEvent** event);
   void (*create_stream)(OfLiteDevice* device, OfLiteStream** stream);
-  void (*create_alloca)(OfLiteDevice* device, OfLiteAllocaType alloca_type, OfLiteAlloca** alloca);
+  void (*create_alloca)(OfLiteDevice* device, OfLiteAllocaType alloca_type,
+                        OfLiteAlloca** alloca);
   void (*malloc)(OfLiteDevice* device, size_t size, void** ptr);
   void (*free)(OfLiteDevice* device, void* ptr);
   void (*malloc_host)(OfLiteDevice* device, size_t size, void** ptr);

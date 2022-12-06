@@ -65,7 +65,9 @@ static void OfLiteTensorDescCreateFromTensorDef(const OfLiteTensorDef* tensor,
   }
 }
 
-static void OfLiteExecutionContextGetOrCreateDriver(OfLiteExecutionContext* context, OfLiteStringRef backend, OfLiteDriver** driver) {
+static void OfLiteExecutionContextGetOrCreateDriver(
+    OfLiteExecutionContext* context, OfLiteStringRef backend,
+    OfLiteDriver** driver) {
   for (size_t i = 0; i < context->driver_size; ++i) {
     if (context->drivers[i]) {
       OfLiteStringRef identifier;
@@ -76,7 +78,8 @@ static void OfLiteExecutionContextGetOrCreateDriver(OfLiteExecutionContext* cont
       }
     }
   }
-  assert(context->driver_size < OFLITE_DRIVER_NUM_LIMIT && "the max number of drivers is 8");
+  assert(context->driver_size < OFLITE_DRIVER_NUM_LIMIT &&
+         "the max number of drivers is 8");
   // create a new driver and reallocate space for drivers
   OfLiteDriverCreate(backend, driver);
   context->drivers[context->driver_size] = *driver;
@@ -101,8 +104,7 @@ static void OfLiteExecutionContextCreateImpl(
     OfLiteParseBackendAndOrdinal(device, &backend, &ordinal);
     OfLiteDriver* driver = nullptr;
     OfLiteExecutionContextGetOrCreateDriver(context, backend, &driver);
-    OfLiteDeviceContextCreate(driver, ordinal,
-                              context->device_contexts + i);
+    OfLiteDeviceContextCreate(driver, ordinal, context->device_contexts + i);
   }
   context->device_context_size = device_size;
 

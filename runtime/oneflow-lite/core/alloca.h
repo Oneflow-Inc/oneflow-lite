@@ -38,19 +38,17 @@ typedef enum OfLiteAllocaType {
   OfLiteAllocaType_Device_Host,
 } OfLiteAllocaType;
 
-OFLITE_API void OfLiteAllocaCreate(OfLiteDevice* device,
-                                      OfLiteAllocaType type,
-                                      OfLiteAlloca** alloca);
+OFLITE_API void OfLiteAllocaCreate(OfLiteDevice* device, OfLiteAllocaType type,
+                                   OfLiteAlloca** alloca);
 
 OFLITE_API void OfLiteAllocaDestory(OfLiteAlloca* alloca);
 
 OFLITE_API void OfLiteAllocaMalloc(OfLiteAlloca* alloca, size_t size,
-                                      void** ptr);
+                                   void** ptr);
 OFLITE_API void OfLiteAllocaFree(OfLiteAlloca* alloca, void* ptr);
 
-OFLITE_API void OfLiteAllocaAlignedAlloc(OfLiteAlloca* alloca,
-                                            size_t alignment, size_t size,
-                                            void** ptr);
+OFLITE_API void OfLiteAllocaAlignedAlloc(OfLiteAlloca* alloca, size_t alignment,
+                                         size_t size, void** ptr);
 
 typedef struct OfLiteAllocaVTable {
   void (*destory)(OfLiteAlloca* alloca);

@@ -30,8 +30,7 @@ typedef struct OfLiteDeviceContext {
   OfLiteAlloca* device_host_alloca;
 } OfLiteDeviceContext;
 
-OFLITE_API void OfLiteDeviceContextCreate(OfLiteDriver* driver,
-                                          size_t ordinal,
+OFLITE_API void OfLiteDeviceContextCreate(OfLiteDriver* driver, size_t ordinal,
                                           OfLiteDeviceContext** context);
 
 OFLITE_API void OfLiteDeviceContextDestory(OfLiteDeviceContext* context);

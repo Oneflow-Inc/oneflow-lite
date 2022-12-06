@@ -15,10 +15,9 @@ limitations under the License.
 */
 #include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/base/stringref.h"
-#include "oneflow-lite/core/driver.h"
 #include "oneflow-lite/core/device.h"
+#include "oneflow-lite/core/driver.h"
 #include "oneflow-lite/core/vtable_handle.h"
-
 #include "oneflow-lite/delegates/x86/x86_device.h"
 
 typedef struct OfLiteX86Driver {
@@ -27,11 +26,13 @@ typedef struct OfLiteX86Driver {
 
 void OfLiteX86DriverDestory(OfLiteDriver* driver) { OfLiteFree(driver); }
 
-void OfLiteX86DriverQueryIdentifier(OfLiteDriver* driver, OfLiteStringRef* identifier) {
+void OfLiteX86DriverQueryIdentifier(OfLiteDriver* driver,
+                                    OfLiteStringRef* identifier) {
   *identifier = OfLiteStringRefCreate(OfLiteX86Identifier);
 }
 
-void OfLiteX86DriverCreateDevice(OfLiteDriver* driver, size_t ordinal, OfLiteDevice** device) {
+void OfLiteX86DriverCreateDevice(OfLiteDriver* driver, size_t ordinal,
+                                 OfLiteDevice** device) {
   *device = OfLiteX86DeviceCreate(ordinal);
 }
 

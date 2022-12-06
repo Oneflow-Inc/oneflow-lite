@@ -31,6 +31,8 @@ OFLITE_API OfLiteStringRef OfLiteStringRefSubStr(OfLiteStringRef value,
 }
 
 OFLITE_API bool OfLiteStringRefEqual(OfLiteStringRef lhs, OfLiteStringRef rhs) {
-  if (lhs.size != rhs.size) { return false; }
+  if (lhs.size != rhs.size) {
+    return false;
+  }
   return 0 == strncmp(lhs.data, rhs.data, lhs.size);
 }

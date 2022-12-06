@@ -18,8 +18,7 @@ limitations under the License.
 #include <stdlib.h>
 
 void OfLiteParseBackendAndOrdinal(OfLiteStringRef device,
-                                     OfLiteStringRef* backend,
-                                     size_t* ordinal) {
+                                  OfLiteStringRef* backend, size_t* ordinal) {
   size_t pos = 0;
   for (; pos < device.size; ++pos) {
     if (device.data[pos] == ':') {

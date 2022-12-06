@@ -32,6 +32,6 @@ size_t OfLiteBufferByteSize(const OfLiteBuffer* buffer);
 uint8_t* OfLiteBufferBytes(const OfLiteBuffer* buffer);
 
 void OfLiteBufferAlloca(const OfLiteBuffer* buffer,
-                           const OfLiteAlloca** alloca);
+                        const OfLiteAlloca** alloca);
 
 #endif  // ONEFLOW_LITE_CORE_BUFFER_H_

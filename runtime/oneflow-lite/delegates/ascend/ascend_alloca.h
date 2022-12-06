@@ -19,6 +19,7 @@ limitations under the License.
 #include "oneflow-lite/core/alloca.h"
 #include "oneflow-lite/core/device.h"
 
-OfLiteAlloca* OfLiteAscendAllocaCreate(OfLiteDevice* device, OfLiteAllocaType alloca_type);
+OfLiteAlloca* OfLiteAscendAllocaCreate(OfLiteDevice* device,
+                                       OfLiteAllocaType alloca_type);
 
 #endif  // ONEFLOW_LITE_DELEGATES_ASCEND_ASCEND_ALLOCA_H_

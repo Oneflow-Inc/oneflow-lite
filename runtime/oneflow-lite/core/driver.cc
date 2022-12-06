@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "oneflow-lite/core/driver.h"
-#include "oneflow-lite/core/device.h"
 
 #include <assert.h>
 
+#include "oneflow-lite/core/device.h"
 #include "oneflow-lite/core/vtable_handle.h"
 
 static const size_t OFLITE_DRIVER_COUNT_LIMIT = 64;
@@ -59,7 +59,8 @@ OFLITE_API void OfLiteDriverDestory(OfLiteDriver* driver) {
   DRIVER_VTABLE_CAST(driver)->destory(driver);
 }
 
-void OfLiteDriverQueryIdentifier(OfLiteDriver* driver, OfLiteStringRef* identifier) {
+void OfLiteDriverQueryIdentifier(OfLiteDriver* driver,
+                                 OfLiteStringRef* identifier) {
   DRIVER_VTABLE_CAST(driver)->query_identifier(driver, identifier);
 }
 

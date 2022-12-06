@@ -33,14 +33,17 @@ OFLITE_API void OfLiteDriverCreate(OfLiteStringRef type, OfLiteDriver** driver);
 
 OFLITE_API void OfLiteDriverDestory(OfLiteDriver* driver);
 
-OFLITE_API void OfLiteDriverQueryIdentifier(OfLiteDriver* driver, OfLiteStringRef* identifier);
+OFLITE_API void OfLiteDriverQueryIdentifier(OfLiteDriver* driver,
+                                            OfLiteStringRef* identifier);
 
-OFLITE_API void OfLiteDriverCreateDevice(OfLiteDriver* driver, size_t ordinal, OfLiteDevice** device);
+OFLITE_API void OfLiteDriverCreateDevice(OfLiteDriver* driver, size_t ordinal,
+                                         OfLiteDevice** device);
 
 typedef struct OfLiteDriverVTable {
   void (*destory)(OfLiteDriver* driver);
   void (*query_identifier)(OfLiteDriver* driver, OfLiteStringRef* identifier);
-  void (*create_device)(OfLiteDriver* driver, size_t ordinal, OfLiteDevice** device);
+  void (*create_device)(OfLiteDriver* driver, size_t ordinal,
+                        OfLiteDevice** device);
 } OfLiteDriverVTable;
 
 typedef OfLiteDriver* (*OfLiteDriverFactory)();

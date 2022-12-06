@@ -14,12 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "oneflow-lite/delegates/x86/x86_device.h"
-#include "oneflow-lite/delegates/x86/x86_alloca.h"
 
 #include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/base/stringref.h"
 #include "oneflow-lite/core/device.h"
 #include "oneflow-lite/core/vtable_handle.h"
+#include "oneflow-lite/delegates/x86/x86_alloca.h"
 
 typedef struct OfLiteX86Device {
   OfLiteVTableHandle handle;
@@ -41,7 +41,9 @@ void OfLiteX86DeviceCreateEvent(OfLiteDevice* device, OfLiteEvent** event) {}
 
 void OfLiteX86DeviceCreateStream(OfLiteDevice* device, OfLiteStream** stream) {}
 
-void OfLiteX86DeviceCreateAlloca(OfLiteDevice* device, OfLiteAllocaType alloca_type, OfLiteAlloca** alloca) {
+void OfLiteX86DeviceCreateAlloca(OfLiteDevice* device,
+                                 OfLiteAllocaType alloca_type,
+                                 OfLiteAlloca** alloca) {
   *alloca = OfLiteX86AllocaCreate(device, alloca_type);
 }
 

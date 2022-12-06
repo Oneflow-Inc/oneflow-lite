@@ -15,10 +15,9 @@ limitations under the License.
 */
 #include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/base/stringref.h"
-#include "oneflow-lite/core/driver.h"
 #include "oneflow-lite/core/device.h"
+#include "oneflow-lite/core/driver.h"
 #include "oneflow-lite/core/vtable_handle.h"
-
 #include "oneflow-lite/delegates/ascend/ascend_device.h"
 
 typedef struct OfLiteAscendDriver {
@@ -27,11 +26,13 @@ typedef struct OfLiteAscendDriver {
 
 void OfLiteAscendDriverDestory(OfLiteDriver* driver) { OfLiteFree(driver); }
 
-void OfLiteAscendDriverQueryIdentifier(OfLiteDriver* driver, OfLiteStringRef* identifier) {
+void OfLiteAscendDriverQueryIdentifier(OfLiteDriver* driver,
+                                       OfLiteStringRef* identifier) {
   *identifier = OfLiteStringRefCreate(OfLiteAscendIdentifier);
 }
 
-void OfLiteAscendDriverCreateDevice(OfLiteDriver* driver, size_t ordinal, OfLiteDevice** device) {
+void OfLiteAscendDriverCreateDevice(OfLiteDriver* driver, size_t ordinal,
+                                    OfLiteDevice** device) {
   *device = OfLiteAscendDeviceCreate(ordinal);
 }
 
@@ -42,8 +43,8 @@ static OfLiteDriverVTable vtable = {
 };
 
 static OfLiteDriver* OfLiteAscendDriverCreate() {
-  OfLiteAscendDriver* driver =
-      reinterpret_cast<OfLiteAscendDriver*>(OfLiteMalloc(sizeof(OfLiteAscendDriver)));
+  OfLiteAscendDriver* driver = reinterpret_cast<OfLiteAscendDriver*>(
+      OfLiteMalloc(sizeof(OfLiteAscendDriver)));
   driver->handle.vtable = &vtable;
   return reinterpret_cast<OfLiteDriver*>(driver);
 }
