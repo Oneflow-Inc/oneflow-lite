@@ -13,9 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include "graph/graph.h"
 #include "ge/ge_api.h"
 #include "ge/ge_ir_build.h"
+#include "graph/graph.h"
 #include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/core/flatbuffer_utils.h"
 #include "oneflow-lite/core/vtable_handle.h"
@@ -30,8 +30,7 @@ typedef struct MlitJitOp {
 void destory(OfLiteOperator* op) { OfLiteFree(op); }
 
 void compute(OfLiteOperator* op, const OfLiteTensorSpan& inputs,
-             const OfLiteTensorSpan& outputs) {
-}
+             const OfLiteTensorSpan& outputs) {}
 
 static OfLiteOperatorVTable vtable = {
     .destory = destory,
@@ -73,9 +72,7 @@ void OfLiteAscendGraphBuilderInitialize() {
   ge::aclgrphBuildInitialize(options);
 }
 
-void OfLiteAscendGraphBuilderFinialize() {
-  ge::aclgrphBuildFinalize();
-}
+void OfLiteAscendGraphBuilderFinialize() { ge::aclgrphBuildFinalize(); }
 
 }  // namespace
 
@@ -83,9 +80,10 @@ ASCEND_CREATE_OP(mlir_jit) {
   MlitJitOp* op = reinterpret_cast<MlitJitOp*>(OfLiteMalloc(sizeof(MlitJitOp)));
   op->handle.vtable = &vtable;
 
-  OfLiteStringRef mlir_assembly =
-    OfLiteOpDefQueryAttrValueByName_AsString(def, OfLiteStringRefCreate("mlir_assembly"));
-  ge::Graph graph = OfLiteAscendLoadGraph(mlir_assembly.data, mlir_assembly.size);
+  OfLiteStringRef mlir_assembly = OfLiteOpDefQueryAttrValueByName_AsString(
+      def, OfLiteStringRefCreate("mlir_assembly"));
+  ge::Graph graph =
+      OfLiteAscendLoadGraph(mlir_assembly.data, mlir_assembly.size);
 
   std::map<ge::AscendString, ge::AscendString> options;
   options.insert(std::make_pair(ge::ir_option::LOG_LEVEL, "error"));

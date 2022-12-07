@@ -13,21 +13,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include "oneflow-lite/base/memory.h"
-#include "oneflow-lite/base/stringref.h"
 #include "oneflow-lite/core/span.h"
 
-#define OFLITE_SPAN_IMPL(className, T) \
+#include "oneflow-lite/base/memory.h"
+#include "oneflow-lite/base/stringref.h"
+
+#define OFLITE_SPAN_IMPL(className, T)                                         \
   OFLITE_API void className##SpanCreate(size_t size, className##Span** span) { \
-    *span = reinterpret_cast<className##Span*>( \
-      OfLiteMalloc(sizeof(className##Span))); \
-    (*span)->items = reinterpret_cast<T**>( \
-        OfLiteMalloc(size * sizeof(T*))); \
-    (*span)->size = size; \
-  } \
-  OFLITE_API void className##SpanDestory(className##Span* span) { \
-    OfLiteFree(span->items); \
-    OfLiteFree(span); \
+    *span = reinterpret_cast<className##Span*>(                                \
+        OfLiteMalloc(sizeof(className##Span)));                                \
+    (*span)->items = reinterpret_cast<T**>(OfLiteMalloc(size * sizeof(T*)));   \
+    (*span)->size = size;                                                      \
+  }                                                                            \
+  OFLITE_API void className##SpanDestory(className##Span* span) {              \
+    OfLiteFree(span->items);                                                   \
+    OfLiteFree(span);                                                          \
   }
 
 OFLITE_SPAN_IMPL(OfLiteI32, int32_t);

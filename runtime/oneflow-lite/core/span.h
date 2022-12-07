@@ -24,14 +24,14 @@ limitations under the License.
 extern "C" {
 #endif  // __cplusplus
 
-#define OFLITE_SPAN(className, T) \
-  typedef struct className##Span { \
-    T** items; \
-    size_t size; \
-  } className##Span; \
-                      \
+#define OFLITE_SPAN(className, T)                                             \
+  typedef struct className##Span {                                            \
+    T** items;                                                                \
+    size_t size;                                                              \
+  } className##Span;                                                          \
+                                                                              \
   OFLITE_API void className##SpanCreate(size_t size, className##Span** span); \
-  OFLITE_API void className##SpanDestory(className##Span* span); \
+  OFLITE_API void className##SpanDestory(className##Span* span);
 
 OFLITE_SPAN(OfLiteI32, int32_t);
 OFLITE_SPAN(OfLiteI64, int64_t);

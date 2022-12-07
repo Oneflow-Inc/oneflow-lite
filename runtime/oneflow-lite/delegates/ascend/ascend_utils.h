@@ -36,13 +36,13 @@ inline aclrtMemcpyKind OfLiteAscendComputeMemcpyKind(OfLiteMemType src_type,
   }
 }
 
-#define ACL_CHECK(status)                                      \
-  if (status != ACL_SUCCESS) {                              \
+#define ACL_CHECK(status)                                        \
+  if (status != ACL_SUCCESS) {                                   \
     OFLITE_FAIL("failed to call acl runtime api: %d\n", status); \
   }
 
-#define ATC_CHECK(status) \
-  if (status != ge::GRAPH_SUCCESS) { \
+#define ATC_CHECK(status)                                     \
+  if (status != ge::GRAPH_SUCCESS) {                          \
     OFLITE_FAIL("failed to call atc graph api: %d\n", status) \
   }
 

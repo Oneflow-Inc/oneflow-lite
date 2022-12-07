@@ -29,19 +29,25 @@ typedef struct OfLiteAttrDefVec OfLiteAttrDefVec;
 typedef struct OfLiteAttrDef OfLiteAttrDef;
 typedef struct OfLiteAttrDefValue OfLiteAttrDefValue;
 
-OFLITE_API const OfLiteAttrDefVec* OfLiteOpDefQueryAttrs(const OfLiteOpDef* def);
+OFLITE_API const OfLiteAttrDefVec* OfLiteOpDefQueryAttrs(
+    const OfLiteOpDef* def);
 
-OFLITE_API const OfLiteAttrDef* OfLiteOpDefQueryAttr(const OfLiteOpDef* def, int index);
-OFLITE_API const OfLiteAttrDef* OfLiteOpDefQueryAttrByName(const OfLiteOpDef* def, OfLiteStringRef name);
+OFLITE_API const OfLiteAttrDef* OfLiteOpDefQueryAttr(const OfLiteOpDef* def,
+                                                     int index);
+OFLITE_API const OfLiteAttrDef* OfLiteOpDefQueryAttrByName(
+    const OfLiteOpDef* def, OfLiteStringRef name);
 
 OFLITE_API OfLiteStringRef OfLiteAttrDefQueryName(const OfLiteAttrDef* def);
 
 OFLITE_API OfLiteStringRef OfLiteAttrDefQueryType(const OfLiteAttrDef* def);
 
-#define OFLITE_ATTRDEF_QUERY_VALUE(return_type, as_type) \
-  OFLITE_API return_type OfLiteAttrDefQueryValue_As##as_type(const OfLiteAttrDef* def); \
-  OFLITE_API return_type OfLiteOpDefQueryAttrValue_As##as_type(const OfLiteOpDef* def, int index); \
-  OFLITE_API return_type OfLiteOpDefQueryAttrValueByName_As##as_type(const OfLiteOpDef* def, OfLiteStringRef name);
+#define OFLITE_ATTRDEF_QUERY_VALUE(return_type, as_type)              \
+  OFLITE_API return_type OfLiteAttrDefQueryValue_As##as_type(         \
+      const OfLiteAttrDef* def);                                      \
+  OFLITE_API return_type OfLiteOpDefQueryAttrValue_As##as_type(       \
+      const OfLiteOpDef* def, int index);                             \
+  OFLITE_API return_type OfLiteOpDefQueryAttrValueByName_As##as_type( \
+      const OfLiteOpDef* def, OfLiteStringRef name);
 
 OFLITE_ATTRDEF_QUERY_VALUE(int32_t, I32);
 OFLITE_ATTRDEF_QUERY_VALUE(int64_t, I64);
