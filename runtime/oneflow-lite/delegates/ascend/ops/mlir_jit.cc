@@ -13,10 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#include "acl/acl_mdl.h"
 #include "ge/ge_api.h"
 #include "ge/ge_ir_build.h"
 #include "graph/graph.h"
-#include "acl/acl_mdl.h"
 #include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/core/flatbuffer_utils.h"
 #include "oneflow-lite/core/vtable_handle.h"
@@ -51,8 +51,9 @@ void OfLiteAscendMlitJitOpDestory(OfLiteOperator* op) {
   OfLiteFree(op);
 }
 
-void OfLiteAscendMlitJitOpCompute(OfLiteOperator* op, const OfLiteTensorSpan& inputs,
-             const OfLiteTensorSpan& outputs) {}
+void OfLiteAscendMlitJitOpCompute(OfLiteOperator* op,
+                                  const OfLiteTensorSpan& inputs,
+                                  const OfLiteTensorSpan& outputs) {}
 
 static OfLiteOperatorVTable vtable = {
     .destory = OfLiteAscendMlitJitOpDestory,
@@ -131,14 +132,17 @@ ASCEND_CREATE_OP(mlir_jit) {
   ATC_CHECK(aclgrphBuildModel(graph, options, op->model));
   OfLiteAscendGraphBuilderFinialize();
 
-  ACL_CHECK(aclmdlLoadFromMem(reinterpret_cast<void*>(op->model.data.get()), op->model.length, &op->model_id));
+  ACL_CHECK(aclmdlLoadFromMem(reinterpret_cast<void*>(op->model.data.get()),
+                              op->model.length, &op->model_id));
   op->model_desc = aclmdlCreateDesc();
   if (!op->model_desc) {
     OFLITE_FAIL("failed to create ACL model description\n");
   }
   ACL_CHECK(aclmdlGetDesc(op->model_desc, op->model_id));
 
-  op->input_dataset = OfLiteAscendCreateDataset(aclmdlGetNumInputs(op->model_desc));
-  op->output_dataset = OfLiteAscendCreateDataset(aclmdlGetNumOutputs(op->model_desc));
+  op->input_dataset =
+      OfLiteAscendCreateDataset(aclmdlGetNumInputs(op->model_desc));
+  op->output_dataset =
+      OfLiteAscendCreateDataset(aclmdlGetNumOutputs(op->model_desc));
   return reinterpret_cast<OfLiteOperator*>(op);
 }
