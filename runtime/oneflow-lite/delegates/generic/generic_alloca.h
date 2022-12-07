@@ -16,4 +16,5 @@ limitations under the License.
 #include "oneflow-lite/core/alloca.h"
 #include "oneflow-lite/core/device.h"
 
-OFLITE_API OfLiteAlloca* OfLiteGenericAllocaCreate(OfLiteDevice* device, OfLiteMemType mem_type);
+OFLITE_API OfLiteAlloca* OfLiteGenericAllocaCreate(OfLiteDevice* device,
+                                                   OfLiteMemType mem_type);

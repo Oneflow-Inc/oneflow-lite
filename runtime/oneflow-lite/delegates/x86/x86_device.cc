@@ -41,8 +41,7 @@ void OfLiteX86DeviceCreateEvent(OfLiteDevice* device, OfLiteEvent** event) {}
 
 void OfLiteX86DeviceCreateStream(OfLiteDevice* device, OfLiteStream** stream) {}
 
-void OfLiteX86DeviceCreateAlloca(OfLiteDevice* device,
-                                 OfLiteMemType mem_type,
+void OfLiteX86DeviceCreateAlloca(OfLiteDevice* device, OfLiteMemType mem_type,
                                  OfLiteAlloca** alloca) {
   *alloca = OfLiteX86AllocaCreate(device, mem_type);
 }

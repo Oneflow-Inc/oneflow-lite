@@ -50,7 +50,8 @@ OFLITE_API void OfLiteAllocaFree(OfLiteAlloca* alloca, void* ptr);
 OFLITE_API void OfLiteAllocaAlignedAlloc(OfLiteAlloca* alloca, size_t alignment,
                                          size_t size, void** ptr);
 
-OFLITE_API void OfLiteAllocaQueryMemType(OfLiteAlloca* alloca, OfLiteMemType* type);
+OFLITE_API void OfLiteAllocaQueryMemType(OfLiteAlloca* alloca,
+                                         OfLiteMemType* type);
 
 typedef struct OfLiteAllocaVTable {
   void (*destory)(OfLiteAlloca* alloca);

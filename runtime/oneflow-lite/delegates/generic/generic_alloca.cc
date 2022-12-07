@@ -49,7 +49,8 @@ static void OfLiteGenericAllocaFree(OfLiteAlloca* alloca, void* ptr) {
   }
 }
 
-static void OfLiteGenericAllocaQueryMemType(OfLiteAlloca* alloca, OfLiteMemType* type) {
+static void OfLiteGenericAllocaQueryMemType(OfLiteAlloca* alloca,
+                                            OfLiteMemType* type) {
   *type = reinterpret_cast<OfLiteGenericAlloca*>(alloca)->mem_type;
 }
 
@@ -61,8 +62,10 @@ static OfLiteAllocaVTable vtable = {
     .query_mem_type = OfLiteGenericAllocaQueryMemType,
 };
 
-OFLITE_API OfLiteAlloca* OfLiteGenericAllocaCreate(OfLiteDevice* device, OfLiteMemType mem_type) {
-  OfLiteGenericAlloca* alloca = reinterpret_cast<OfLiteGenericAlloca*>(OfLiteMalloc(sizeof(OfLiteGenericAlloca)));
+OFLITE_API OfLiteAlloca* OfLiteGenericAllocaCreate(OfLiteDevice* device,
+                                                   OfLiteMemType mem_type) {
+  OfLiteGenericAlloca* alloca = reinterpret_cast<OfLiteGenericAlloca*>(
+      OfLiteMalloc(sizeof(OfLiteGenericAlloca)));
   alloca->handle.vtable = &vtable;
   alloca->device = device;
   alloca->mem_type = mem_type;

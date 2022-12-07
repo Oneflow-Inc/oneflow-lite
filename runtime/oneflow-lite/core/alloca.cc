@@ -41,7 +41,8 @@ static void OfLiteHostAllocaFree(OfLiteAlloca* alloca, void* ptr) {
   OfLiteFree(ptr);
 }
 
-static void OfLiteHostAllocaQueryMemType(OfLiteAlloca* alloca, OfLiteMemType* type) {
+static void OfLiteHostAllocaQueryMemType(OfLiteAlloca* alloca,
+                                         OfLiteMemType* type) {
   *type = OfLiteMemType_Host;
 }
 
@@ -86,7 +87,8 @@ OFLITE_API void OfLiteAllocaAlignedAlloc(OfLiteAlloca* alloca, size_t alignment,
   ALLOCA_VTABLE_CAST(alloca)->aligned_alloc(alloca, alignment, size, ptr);
 }
 
-OFLITE_API void OfLiteAllocaQueryMemType(OfLiteAlloca* alloca, OfLiteMemType* type) {
+OFLITE_API void OfLiteAllocaQueryMemType(OfLiteAlloca* alloca,
+                                         OfLiteMemType* type) {
   ALLOCA_VTABLE_CAST(alloca)->query_mem_type(alloca, type);
 }
 

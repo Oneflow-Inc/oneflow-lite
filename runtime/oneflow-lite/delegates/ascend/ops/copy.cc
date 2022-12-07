@@ -13,10 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include "oneflow-lite/delegates/ascend/ascend_create_op.h"
-
 #include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/core/vtable_handle.h"
+#include "oneflow-lite/delegates/ascend/ascend_create_op.h"
 
 namespace {
 
@@ -24,11 +23,10 @@ typedef struct CopyOp {
   OfLiteVTableHandle handle;
 } CopyOp;
 
-void destory(OfLiteOperator* op) {
-  OfLiteFree(op);
-}
+void destory(OfLiteOperator* op) { OfLiteFree(op); }
 
-aclrtMemcpyKind OfLiteAscendComputeMemcpyKind(OfLiteMemType src_type, OfLiteMemType dst_type) {
+aclrtMemcpyKind OfLiteAscendComputeMemcpyKind(OfLiteMemType src_type,
+                                              OfLiteMemType dst_type) {
   if (src_type == OfLiteMemType_Device) {
     if (dst_type = OfLiteMemType_Device) {
       return ACL_MEMCPY_DEVICE_TO_DEVICE;
@@ -45,19 +43,21 @@ aclrtMemcpyKind OfLiteAscendComputeMemcpyKind(OfLiteMemType src_type, OfLiteMemT
 }
 
 void compute(OfLiteOperator* op, const OfLiteTensorSpan& inputs,
-                  const OfLiteTensorSpan& outputs) {
+             const OfLiteTensorSpan& outputs) {
   if (inputs.size != outputs.size || inputs.size != 1) {
     OFLITE_FAIL("the number of inputs and outputs should all be 1\n");
-  }  
-  aclrtMemcpyKind kind = OfLiteAscendComputeMemcpyKind(OfLiteTensorMemType(inputs.items[0]), OfLiteTensorMemType(outputs.items[0]));
+  }
+  aclrtMemcpyKind kind =
+      OfLiteAscendComputeMemcpyKind(OfLiteTensorMemType(inputs.items[0]),
+                                    OfLiteTensorMemType(outputs.items[0]));
   size_t length = OfLiteTensorDataSize(outputs.items[0]);
   ACL_CHECK(aclrtMemcpy(OfLiteTensorData(outputs.items[0]), length,
-       OfLiteTensorData(inputs.items[0]), length, kind));
+                        OfLiteTensorData(inputs.items[0]), length, kind));
 }
 
 static OfLiteOperatorVTable vtable = {
-  .destory = destory,
-  .compute = compute,
+    .destory = destory,
+    .compute = compute,
 };
 
 }  // namespace
