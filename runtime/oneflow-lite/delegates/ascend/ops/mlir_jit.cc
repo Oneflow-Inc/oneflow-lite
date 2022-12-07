@@ -16,6 +16,7 @@ limitations under the License.
 #include "ge/ge_api.h"
 #include "ge/ge_ir_build.h"
 #include "graph/graph.h"
+#include "acl/acl_mdl.h"
 #include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/core/flatbuffer_utils.h"
 #include "oneflow-lite/core/vtable_handle.h"
@@ -25,16 +26,37 @@ namespace {
 
 typedef struct MlitJitOp {
   OfLiteVTableHandle handle;
+  ge::ModelBufferData model;
+  uint32_t model_id;
+  aclmdlDesc* model_desc;
+  aclmdlDataset* input_dataset;
+  aclmdlDataset* output_dataset;
 } MlitJitOp;
 
-void destory(OfLiteOperator* op) { OfLiteFree(op); }
+void OfLiteAscendDestoryDataset(aclmdlDataset* dataset) {
+  for (size_t i = 0; i < aclmdlGetDatasetNumBuffers(dataset); ++i) {
+    aclDataBuffer* data_buffer = aclmdlGetDatasetBuffer(dataset, i);
+    ACL_CHECK(aclDestroyDataBuffer(data_buffer));
+  }
+  ACL_CHECK(aclmdlDestroyDataset(dataset));
+}
 
-void compute(OfLiteOperator* op, const OfLiteTensorSpan& inputs,
+void OfLiteAscendMlitJitOpDestory(OfLiteOperator* op) {
+  MlitJitOp* impl = reinterpret_cast<MlitJitOp*>(op);
+  OfLiteAscendDestoryDataset(impl->input_dataset);
+  OfLiteAscendDestoryDataset(impl->output_dataset);
+  ACL_CHECK(aclmdlUnload(impl->model_id));
+  ACL_CHECK(aclmdlDestroyDesc(impl->model_desc));
+  impl->model.~ModelBufferData();
+  OfLiteFree(op);
+}
+
+void OfLiteAscendMlitJitOpCompute(OfLiteOperator* op, const OfLiteTensorSpan& inputs,
              const OfLiteTensorSpan& outputs) {}
 
 static OfLiteOperatorVTable vtable = {
-    .destory = destory,
-    .compute = compute,
+    .destory = OfLiteAscendMlitJitOpDestory,
+    .compute = OfLiteAscendMlitJitOpCompute,
 };
 
 ge::Graph OfLiteAscendLoadGraph(const void* buffer, size_t size) {
@@ -74,6 +96,21 @@ void OfLiteAscendGraphBuilderInitialize() {
 
 void OfLiteAscendGraphBuilderFinialize() { ge::aclgrphBuildFinalize(); }
 
+aclmdlDataset* OfLiteAscendCreateDataset(size_t count) {
+  aclmdlDataset* dataset = aclmdlCreateDataset();
+  if (!dataset) {
+    OFLITE_FAIL("failed to create ACL dataset\n");
+  }
+  for (size_t i = 0; i < count; ++i) {
+    aclDataBuffer* data_buffer = aclCreateDataBuffer(nullptr, 0);
+    if (!data_buffer) {
+      OFLITE_FAIL("failed to create ACL data buffer\n");
+    }
+    ACL_CHECK(aclmdlAddDatasetBuffer(dataset, data_buffer));
+  }
+  return dataset;
+}
+
 }  // namespace
 
 ASCEND_CREATE_OP(mlir_jit) {
@@ -91,9 +128,17 @@ ASCEND_CREATE_OP(mlir_jit) {
   options.insert(std::make_pair(ge::ir_option::INPUT_FORMAT, "NCHW"));
 
   OfLiteAscendGraphBuilderInitialize();
-  ge::ModelBufferData buffer;
-  ATC_CHECK(aclgrphBuildModel(graph, options, buffer));
+  ATC_CHECK(aclgrphBuildModel(graph, options, op->model));
   OfLiteAscendGraphBuilderFinialize();
 
+  ACL_CHECK(aclmdlLoadFromMem(reinterpret_cast<void*>(op->model.data.get()), op->model.length, &op->model_id));
+  op->model_desc = aclmdlCreateDesc();
+  if (!op->model_desc) {
+    OFLITE_FAIL("failed to create ACL model description\n");
+  }
+  ACL_CHECK(aclmdlGetDesc(op->model_desc, op->model_id));
+
+  op->input_dataset = OfLiteAscendCreateDataset(aclmdlGetNumInputs(op->model_desc));
+  op->output_dataset = OfLiteAscendCreateDataset(aclmdlGetNumOutputs(op->model_desc));
   return reinterpret_cast<OfLiteOperator*>(op);
 }
