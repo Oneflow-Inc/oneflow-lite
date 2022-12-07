@@ -35,11 +35,6 @@ typedef struct OfLiteTensorDesc {
   OfLiteLayout layout;
 } OfLiteTensorDesc;
 
-typedef struct OfLiteTensorSpan {
-  OfLiteTensor** items;
-  size_t size;
-} OfLiteTensorSpan;
-
 OFLITE_API void OfLiteTensorCreate(const OfLiteTensorDesc& desc,
                                    OfLiteAlloca* alloca, OfLiteTensor** tensor);
 
@@ -66,9 +61,6 @@ OFLITE_API size_t OfLiteTensorDataSize(const OfLiteTensor* tensor);
 
 OFLITE_API bool OfLiteTensorIsHost(const OfLiteTensor* tensor);
 OFLITE_API OfLiteMemType OfLiteTensorMemType(const OfLiteTensor* tensor);
-
-OFLITE_API void OfLiteTensorSpanCreate(size_t size, OfLiteTensorSpan** span);
-OFLITE_API void OfLiteTensorSpanDestory(OfLiteTensorSpan* span);
 
 #ifdef __cplusplus
 }  // extern "C"

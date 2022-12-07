@@ -9,7 +9,9 @@ file(GLOB_RECURSE OFLITE_RUNTIME_CORE_SRCS
     executable.cc
     execution_context.cc
     execution_unit.cc
+    flatbuffer_utils.cc
     operator.cc
+    span.cc
     stream.cc
     tensor.cc
 )

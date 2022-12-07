@@ -105,16 +105,3 @@ OFLITE_API OfLiteMemType OfLiteTensorMemType(const OfLiteTensor* tensor) {
   OfLiteAllocaQueryMemType(alloca, &mem_type);
   return mem_type;
 }
-
-OFLITE_API void OfLiteTensorSpanCreate(size_t size, OfLiteTensorSpan** span) {
-  *span = reinterpret_cast<OfLiteTensorSpan*>(
-      OfLiteMalloc(sizeof(OfLiteTensorSpan)));
-  (*span)->items = reinterpret_cast<OfLiteTensor**>(
-      OfLiteMalloc(size * sizeof(OfLiteTensor*)));
-  (*span)->size = size;
-}
-
-OFLITE_API void OfLiteTensorSpanDestory(OfLiteTensorSpan* span) {
-  OfLiteFree(span->items);
-  OfLiteFree(span);
-}

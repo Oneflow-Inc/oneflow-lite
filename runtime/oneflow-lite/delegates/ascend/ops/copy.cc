@@ -25,23 +25,6 @@ typedef struct CopyOp {
 
 void destory(OfLiteOperator* op) { OfLiteFree(op); }
 
-aclrtMemcpyKind OfLiteAscendComputeMemcpyKind(OfLiteMemType src_type,
-                                              OfLiteMemType dst_type) {
-  if (src_type == OfLiteMemType_Device) {
-    if (dst_type = OfLiteMemType_Device) {
-      return ACL_MEMCPY_DEVICE_TO_DEVICE;
-    } else {
-      return ACL_MEMCPY_DEVICE_TO_HOST;
-    }
-  } else {
-    if (dst_type = OfLiteMemType_Device) {
-      return ACL_MEMCPY_HOST_TO_DEVICE;
-    } else {
-      return ACL_MEMCPY_HOST_TO_HOST;
-    }
-  }
-}
-
 void compute(OfLiteOperator* op, const OfLiteTensorSpan& inputs,
              const OfLiteTensorSpan& outputs) {
   if (inputs.size != outputs.size || inputs.size != 1) {

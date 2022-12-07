@@ -15,8 +15,6 @@ limitations under the License.
 */
 #include "oneflow-lite/delegates/ascend/ascend_create_op.h"
 
-#include "oneflow-lite/schemas/executable_generated.h"
-
 void OfLiteOpDefName(const OfLiteOpDef* def, OfLiteStringRef* name) {
   flatbuffers_string_t flatc_name = oneflow_lite_OpDef_name(
       reinterpret_cast<const oneflow_lite_OpDef_table_t>(def));
@@ -34,6 +32,7 @@ OfLiteOperator* OfLiteAscendCreateOp(OfLiteDevice* device,
   }
 
   ASCEND_CREATE_OP_IF(copy);
+  ASCEND_CREATE_OP_IF(mlir_jit);
 
 #undef CREATE_OP_IF
   OFLITE_FAIL("failed to create the op %s for ascend backend\n", name.data);

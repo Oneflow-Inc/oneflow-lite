@@ -16,6 +16,7 @@ limitations under the License.
 #ifndef ONEFLOW_LITE_CORE_OPERATOR_H_
 #define ONEFLOW_LITE_CORE_OPERATOR_H_
 
+#include "oneflow-lite/core/span.h"
 #include "oneflow-lite/core/tensor.h"
 
 #ifdef __cplusplus

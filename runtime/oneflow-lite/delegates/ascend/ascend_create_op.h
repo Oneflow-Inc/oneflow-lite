@@ -20,6 +20,7 @@ limitations under the License.
 #include "oneflow-lite/core/device.h"
 #include "oneflow-lite/core/operator.h"
 #include "oneflow-lite/delegates/ascend/ascend_utils.h"
+#include "oneflow-lite/schemas/executable_generated.h"
 
 OfLiteOperator* OfLiteAscendCreateOp(OfLiteDevice* device,
                                      const OfLiteOpDef* def);
@@ -29,5 +30,6 @@ OfLiteOperator* OfLiteAscendCreateOp(OfLiteDevice* device,
                                                const OfLiteOpDef* def)
 
 ASCEND_CREATE_OP(copy);
+ASCEND_CREATE_OP(mlir_jit);
 
 #endif  // ONEFLOW_LITE_DELEGATES_ASCEND_ASCEND_CREATE_OP_H_
