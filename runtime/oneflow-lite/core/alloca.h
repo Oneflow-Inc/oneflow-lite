@@ -31,14 +31,14 @@ typedef struct OfLiteDevice OfLiteDevice;
 
 OFLITE_API void OfLiteHostAllocaCreate(OfLiteAlloca** alloca);
 
-typedef enum OfLiteAllocaType {
-  OfLiteAllocaType_Device,
-
+typedef enum OfLiteMemType {
+  OfLiteMemType_Host,
+  OfLiteMemType_Device,
   // Page-locked host memory and accessible to the device
-  OfLiteAllocaType_Device_Host,
-} OfLiteAllocaType;
+  OfLiteMemType_Device_Host,
+} OfLiteMemType;
 
-OFLITE_API void OfLiteAllocaCreate(OfLiteDevice* device, OfLiteAllocaType type,
+OFLITE_API void OfLiteAllocaCreate(OfLiteDevice* device, OfLiteMemType type,
                                    OfLiteAlloca** alloca);
 
 OFLITE_API void OfLiteAllocaDestory(OfLiteAlloca* alloca);
@@ -50,12 +50,15 @@ OFLITE_API void OfLiteAllocaFree(OfLiteAlloca* alloca, void* ptr);
 OFLITE_API void OfLiteAllocaAlignedAlloc(OfLiteAlloca* alloca, size_t alignment,
                                          size_t size, void** ptr);
 
+OFLITE_API void OfLiteAllocaQueryMemType(OfLiteAlloca* alloca, OfLiteMemType* type);
+
 typedef struct OfLiteAllocaVTable {
   void (*destory)(OfLiteAlloca* alloca);
   void (*malloc)(OfLiteAlloca* alloca, size_t size, void** ptr);
   void (*aligned_alloc)(OfLiteAlloca* alloca, size_t alignment, size_t size,
                         void** ptr);
   void (*free)(OfLiteAlloca* alloca, void* ptr);
+  void (*query_mem_type)(OfLiteAlloca* alloca, OfLiteMemType* type);
 } OfLiteAllocaVTable;
 
 #ifdef __cplusplus

@@ -42,9 +42,14 @@ void OfLiteX86DeviceCreateEvent(OfLiteDevice* device, OfLiteEvent** event) {}
 void OfLiteX86DeviceCreateStream(OfLiteDevice* device, OfLiteStream** stream) {}
 
 void OfLiteX86DeviceCreateAlloca(OfLiteDevice* device,
-                                 OfLiteAllocaType alloca_type,
+                                 OfLiteMemType mem_type,
                                  OfLiteAlloca** alloca) {
-  *alloca = OfLiteX86AllocaCreate(device, alloca_type);
+  *alloca = OfLiteX86AllocaCreate(device, mem_type);
+}
+
+void OfLiteX86DeviceCreateOp(OfLiteDevice* device, const OfLiteOpDef* def,
+                             OfLiteOperator** op) {
+  OFLITE_FAIL("can not create any op for x86 device\n");
 }
 
 void OfLiteX86DeviceMalloc(OfLiteDevice* device, size_t size, void** ptr) {
@@ -68,6 +73,7 @@ static OfLiteDeviceVTable vtable = {
     .create_event = OfLiteX86DeviceCreateEvent,
     .create_stream = OfLiteX86DeviceCreateStream,
     .create_alloca = OfLiteX86DeviceCreateAlloca,
+    .create_op = OfLiteX86DeviceCreateOp,
     .malloc = OfLiteX86DeviceMalloc,
     .free = OfLiteX86DeviceFree,
     .malloc_host = OfLiteX86DeviceMallocHost,

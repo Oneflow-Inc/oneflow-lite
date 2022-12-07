@@ -52,9 +52,9 @@ OFLITE_API void OfLiteDeviceCreateStream(OfLiteDevice* device,
 }
 
 OFLITE_API void OfLiteDeviceCreateAlloca(OfLiteDevice* device,
-                                         OfLiteAllocaType alloca_type,
+                                         OfLiteMemType mem_type,
                                          OfLiteAlloca** alloca) {
-  DEVICE_VTABLE_CAST(device)->create_alloca(device, alloca_type, alloca);
+  DEVICE_VTABLE_CAST(device)->create_alloca(device, mem_type, alloca);
 }
 
 OFLITE_API void OfLiteDeviceCreateOp(OfLiteDevice* device,

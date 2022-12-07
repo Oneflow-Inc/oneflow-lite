@@ -13,6 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#include "oneflow-lite/delegates/generic/generic_alloca.h"
+
+#include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/core/alloca.h"
 #include "oneflow-lite/core/device.h"
 #include "oneflow-lite/core/vtable_handle.h"
@@ -20,21 +23,34 @@ limitations under the License.
 typedef struct OfLiteGenericAlloca {
   OfLiteVTableHandle handle;
   OfLiteDevice* device;
+  OfLiteMemType mem_type;
 } OfLiteGenericAlloca;
 
 static void OfLiteGenericAllocaDestory(OfLiteAlloca* alloca) {
-  delete reinterpret_cast<OfLiteGenericAlloca*>(alloca);
+  OfLiteFree(alloca);
 }
 
 static void OfLiteGenericAllocaMalloc(OfLiteAlloca* alloca, size_t size,
                                       void** ptr) {
-  OfLiteDevice* device = reinterpret_cast<OfLiteGenericAlloca*>(alloca)->device;
-  OfLiteDeviceMalloc(device, size, ptr);
+  OfLiteGenericAlloca* impl = reinterpret_cast<OfLiteGenericAlloca*>(alloca);
+  if (impl->mem_type == OfLiteMemType_Device) {
+    OfLiteDeviceMalloc(impl->device, size, ptr);
+  } else {
+    OfLiteDeviceMallocHost(impl->device, size, ptr);
+  }
 }
 
 static void OfLiteGenericAllocaFree(OfLiteAlloca* alloca, void* ptr) {
-  OfLiteDevice* device = reinterpret_cast<OfLiteGenericAlloca*>(alloca)->device;
-  OfLiteDeviceFree(device, ptr);
+  OfLiteGenericAlloca* impl = reinterpret_cast<OfLiteGenericAlloca*>(alloca);
+  if (impl->mem_type == OfLiteMemType_Device) {
+    OfLiteDeviceFree(impl->device, ptr);
+  } else {
+    OfLiteDeviceFreeHost(impl->device, ptr);
+  }
+}
+
+static void OfLiteGenericAllocaQueryMemType(OfLiteAlloca* alloca, OfLiteMemType* type) {
+  *type = reinterpret_cast<OfLiteGenericAlloca*>(alloca)->mem_type;
 }
 
 static OfLiteAllocaVTable vtable = {
@@ -42,11 +58,13 @@ static OfLiteAllocaVTable vtable = {
     .malloc = OfLiteGenericAllocaMalloc,
     .aligned_alloc = 0,
     .free = OfLiteGenericAllocaFree,
+    .query_mem_type = OfLiteGenericAllocaQueryMemType,
 };
 
-OFLITE_API OfLiteAlloca* OfLiteGenericAllocaCreate(OfLiteDevice* device) {
-  OfLiteGenericAlloca* alloca = new OfLiteGenericAlloca;
+OFLITE_API OfLiteAlloca* OfLiteGenericAllocaCreate(OfLiteDevice* device, OfLiteMemType mem_type) {
+  OfLiteGenericAlloca* alloca = reinterpret_cast<OfLiteGenericAlloca*>(OfLiteMalloc(sizeof(OfLiteGenericAlloca)));
   alloca->handle.vtable = &vtable;
   alloca->device = device;
+  alloca->mem_type = mem_type;
   return reinterpret_cast<OfLiteAlloca*>(alloca);
 }

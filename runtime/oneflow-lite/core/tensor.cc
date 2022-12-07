@@ -78,7 +78,7 @@ OFLITE_API void OfLiteTensorLayout(const OfLiteTensor* tensor,
 }
 
 OFLITE_API void OfLiteTensorAlloca(const OfLiteTensor* tensor,
-                                   const OfLiteAlloca** alloca) {
+                                   OfLiteAlloca** alloca) {
   OfLiteBufferAlloca(tensor->buffer, alloca);
 }
 
@@ -88,6 +88,22 @@ OFLITE_API void* OfLiteTensorData(const OfLiteTensor* tensor) {
 
 OFLITE_API size_t OfLiteTensorDataSize(const OfLiteTensor* tensor) {
   return tensor->buffer_length;
+}
+
+OFLITE_API bool OfLiteTensorIsHost(const OfLiteTensor* tensor) {
+  OfLiteAlloca* alloca = nullptr;
+  OfLiteBufferAlloca(tensor->buffer, &alloca);
+  OfLiteMemType mem_type;
+  OfLiteAllocaQueryMemType(alloca, &mem_type);
+  return mem_type != OfLiteMemType_Device;
+}
+
+OFLITE_API OfLiteMemType OfLiteTensorMemType(const OfLiteTensor* tensor) {
+  OfLiteAlloca* alloca = nullptr;
+  OfLiteBufferAlloca(tensor->buffer, &alloca);
+  OfLiteMemType mem_type;
+  OfLiteAllocaQueryMemType(alloca, &mem_type);
+  return mem_type;
 }
 
 OFLITE_API void OfLiteTensorSpanCreate(size_t size, OfLiteTensorSpan** span) {

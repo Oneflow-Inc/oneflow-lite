@@ -52,9 +52,9 @@ void OfLiteAscendDeviceCreateStream(OfLiteDevice* device,
                                     OfLiteStream** stream) {}
 
 void OfLiteAscendDeviceCreateAlloca(OfLiteDevice* device,
-                                    OfLiteAllocaType alloca_type,
+                                    OfLiteMemType mem_type,
                                     OfLiteAlloca** alloca) {
-  *alloca = OfLiteAscendAllocaCreate(device, alloca_type);
+  *alloca = OfLiteAscendAllocaCreate(device, mem_type);
 }
 
 void OfLiteAscendDeviceCreateOp(OfLiteDevice* device, const OfLiteOpDef* def,

@@ -19,11 +19,6 @@ limitations under the License.
 #include "oneflow-lite/delegates/generic/generic_alloca.h"
 
 OfLiteAlloca* OfLiteX86AllocaCreate(OfLiteDevice* device,
-                                    OfLiteAllocaType alloca_type) {
-  if (alloca_type == OfLiteAllocaType_Device) {
-    return OfLiteGenericAllocaCreate(device);
-  }
-  OfLiteAlloca* host_alloca = nullptr;
-  OfLiteHostAllocaCreate(&host_alloca);
-  return host_alloca;
+                                    OfLiteMemType mem_type) {
+  return OfLiteGenericAllocaCreate(device, mem_type);
 }

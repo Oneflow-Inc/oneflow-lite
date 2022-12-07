@@ -15,8 +15,6 @@ limitations under the License.
 */
 #include "oneflow-lite/delegates/ascend/ascend_create_op.h"
 
-#include <stdio.h>
-
 #include "oneflow-lite/schemas/executable_generated.h"
 
 void OfLiteOpDefName(const OfLiteOpDef* def, OfLiteStringRef* name) {

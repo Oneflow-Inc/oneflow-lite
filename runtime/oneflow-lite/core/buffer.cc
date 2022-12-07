@@ -52,7 +52,6 @@ size_t OfLiteBufferByteSize(const OfLiteBuffer* buffer) {
 
 uint8_t* OfLiteBufferBytes(const OfLiteBuffer* buffer) { return buffer->bytes; }
 
-void OfLiteBufferAlloca(const OfLiteBuffer* buffer,
-                        const OfLiteAlloca** alloca) {
+void OfLiteBufferAlloca(const OfLiteBuffer* buffer, OfLiteAlloca** alloca) {
   *alloca = buffer->alloca;
 }

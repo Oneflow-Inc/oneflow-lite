@@ -27,8 +27,8 @@ OFLITE_API void OfLiteDeviceContextCreate(OfLiteDriver* driver, size_t ordinal,
   OfLiteAlloca* device_alloca = nullptr;
   OfLiteAlloca* device_host_alloca = nullptr;
   OfLiteDeviceCreate(driver, ordinal, &device);
-  OfLiteAllocaCreate(device, OfLiteAllocaType_Device, &device_alloca);
-  OfLiteAllocaCreate(device, OfLiteAllocaType_Device_Host, &device_host_alloca);
+  OfLiteAllocaCreate(device, OfLiteMemType_Device, &device_alloca);
+  OfLiteAllocaCreate(device, OfLiteMemType_Device_Host, &device_host_alloca);
   (*context)->device = device;
   (*context)->device_alloca = device_alloca;
   (*context)->device_host_alloca = device_host_alloca;

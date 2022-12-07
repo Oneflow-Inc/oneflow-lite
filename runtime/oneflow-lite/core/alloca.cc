@@ -41,12 +41,17 @@ static void OfLiteHostAllocaFree(OfLiteAlloca* alloca, void* ptr) {
   OfLiteFree(ptr);
 }
 
+static void OfLiteHostAllocaQueryMemType(OfLiteAlloca* alloca, OfLiteMemType* type) {
+  *type = OfLiteMemType_Host;
+}
+
 OFLITE_API void OfLiteHostAllocaCreate(OfLiteAlloca** alloca) {
   static OfLiteAllocaVTable vtable = {
       .destory = OfLiteHostAllocaDestory,
       .malloc = OfLiteHostAllocaMalloc,
       .aligned_alloc = OfLiteHostAllocaAlignedAlloc,
       .free = OfLiteHostAllocaFree,
+      .query_mem_type = OfLiteHostAllocaQueryMemType,
   };
   OfLiteHostAlloca* host_alloca = reinterpret_cast<OfLiteHostAlloca*>(
       OfLiteMalloc(sizeof(OfLiteHostAlloca)));
@@ -54,7 +59,7 @@ OFLITE_API void OfLiteHostAllocaCreate(OfLiteAlloca** alloca) {
   *alloca = reinterpret_cast<OfLiteAlloca*>(host_alloca);
 }
 
-OFLITE_API void OfLiteAllocaCreate(OfLiteDevice* device, OfLiteAllocaType type,
+OFLITE_API void OfLiteAllocaCreate(OfLiteDevice* device, OfLiteMemType type,
                                    OfLiteAlloca** alloca) {
   OfLiteDeviceCreateAlloca(device, type, alloca);
 }
@@ -79,6 +84,10 @@ OFLITE_API void OfLiteAllocaFree(OfLiteAlloca* alloca, void* ptr) {
 OFLITE_API void OfLiteAllocaAlignedAlloc(OfLiteAlloca* alloca, size_t alignment,
                                          size_t size, void** ptr) {
   ALLOCA_VTABLE_CAST(alloca)->aligned_alloc(alloca, alignment, size, ptr);
+}
+
+OFLITE_API void OfLiteAllocaQueryMemType(OfLiteAlloca* alloca, OfLiteMemType* type) {
+  ALLOCA_VTABLE_CAST(alloca)->query_mem_type(alloca, type);
 }
 
 #undef ALLOCA_VTABLE_CAST
