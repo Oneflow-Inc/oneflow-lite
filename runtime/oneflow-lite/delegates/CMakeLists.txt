@@ -1,4 +1,9 @@
 add_subdirectory(generic)
-add_subdirectory(x86)
 
-add_subdirectory(ascend)
+if(BUILD_X86)
+  add_subdirectory(x86)
+endif()
+
+if(BUILD_ASCEND_NPU)
+  add_subdirectory(ascend)
+endif()

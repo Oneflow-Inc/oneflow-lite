@@ -1,9 +1,8 @@
-cmake_minimum_required(VERSION 3.11.0)
+cmake_minimum_required(VERSION 3.18.0)
 
-project(oneflow-lite-compiler C CXX)
+set(WITH_MLIR ON)
+set(BUILD_CUDA OFF)
+set(BUILD_CPP_API OFF)
+set(BUILD_PYTHON OFF)
 
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty thirdparty)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../schemas oneflow-lite/schemas)
-add_subdirectory(oneflow-lite)
+add_subdirectory(oneflow)

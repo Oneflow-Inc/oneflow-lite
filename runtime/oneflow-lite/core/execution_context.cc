@@ -131,11 +131,10 @@ static void OfLiteExecutionContextCreateImpl(
   }
   context->buffer_segment_size = buffer_segment_size;
 
-  size_t operand_size = 0;
-  OfLiteExecutableOperandSize(executable, &operand_size);
+  OfLiteExecutableOperandSize(executable, &context->operand_size);
   context->operands = reinterpret_cast<OfLiteTensor**>(
-      OfLiteMalloc(operand_size * sizeof(OfLiteTensor*)));
-  for (size_t i = 0; i < operand_size; ++i) {
+      OfLiteMalloc(context->operand_size * sizeof(OfLiteTensor*)));
+  for (size_t i = 0; i < context->operand_size; ++i) {
     const OfLiteTensorDef* tensor = nullptr;
     OfLiteExecutableOperand(executable, i, &tensor);
     OfLiteTensorDesc desc;

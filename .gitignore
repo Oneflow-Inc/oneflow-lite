@@ -1,5 +1,9 @@
 /build
 /build-*
+/compiler/build
+/compiler/build-*
+/runtime/build
+/runtime/build-*
 *.pyc
 *.ipynb
 core.*

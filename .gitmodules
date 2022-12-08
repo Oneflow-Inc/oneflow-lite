@@ -1,0 +1,4 @@
+[submodule "compiler/oneflow"]
+	path = compiler/oneflow
+	url = https://github.com/Oneflow-Inc/oneflow.git
+	branch = dev_lite_converter
