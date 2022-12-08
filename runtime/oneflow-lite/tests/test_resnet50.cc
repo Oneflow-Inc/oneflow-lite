@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
   OfLiteTensorTensorDesc(input, &input_desc);
   if (input_desc->dtype != OfLiteDataType_F32) {
     OFLITE_FAIL("input tensor data type should be float\n");
-  } 
+  }
   float* input_data = reinterpret_cast<float*>(OfLiteTensorData(input));
   for (size_t i = 0; i < OfLiteDimsCount(input_desc->dims); ++i) {
     input_data[i] = 1.0f;

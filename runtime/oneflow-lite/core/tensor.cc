@@ -68,7 +68,8 @@ OFLITE_API void OfLiteTensorTensorDesc(const OfLiteTensor* tensor,
   *desc = &tensor->desc;
 }
 
-OFLITE_API void OfLiteTensorDims(const OfLiteTensor* tensor, const OfLiteDims** dims) {
+OFLITE_API void OfLiteTensorDims(const OfLiteTensor* tensor,
+                                 const OfLiteDims** dims) {
   *dims = &tensor->desc.dims;
 }
 
