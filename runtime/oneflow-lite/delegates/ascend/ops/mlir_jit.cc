@@ -71,14 +71,18 @@ void OfLiteAscendMlitJitOpCompute(OfLiteOperator* op,
   for (size_t i = 0; i < impl->input_count; ++i) {
     OfLiteTensor* input = inputs.items[i];
     aclDataBuffer* data_buffer = aclmdlGetDatasetBuffer(impl->input_dataset, i);
-    ACL_CHECK(aclUpdateDataBuffer(data_buffer, OfLiteTensorData(input), OfLiteTensorDataSize(input)));
+    ACL_CHECK(aclUpdateDataBuffer(data_buffer, OfLiteTensorData(input),
+                                  OfLiteTensorDataSize(input)));
   }
   for (size_t i = 0; i < impl->output_count; ++i) {
     OfLiteTensor* output = outputs.items[i];
-    aclDataBuffer* data_buffer = aclmdlGetDatasetBuffer(impl->output_dataset, i);
-    ACL_CHECK(aclUpdateDataBuffer(data_buffer, OfLiteTensorData(output), OfLiteTensorDataSize(output)));
+    aclDataBuffer* data_buffer =
+        aclmdlGetDatasetBuffer(impl->output_dataset, i);
+    ACL_CHECK(aclUpdateDataBuffer(data_buffer, OfLiteTensorData(output),
+                                  OfLiteTensorDataSize(output)));
   }
-  ACL_CHECK(aclmdlExecute(impl->model_id, impl->input_dataset, impl->output_dataset));
+  ACL_CHECK(
+      aclmdlExecute(impl->model_id, impl->input_dataset, impl->output_dataset));
 }
 
 static OfLiteOperatorVTable vtable = {
@@ -151,10 +155,9 @@ ASCEND_CREATE_OP(mlir_jit) {
 
   OfLiteAscendGraphBuilderInitialize();
   std::map<ge::AscendString, ge::AscendString> options = {
-    {ge::ir_option::LOG_LEVEL, "error"},
-    {ge::ir_option::OP_DEBUG_LEVEL, "0"},
-    {ge::ir_option::INPUT_FORMAT, "NCHW"}
-  };
+      {ge::ir_option::LOG_LEVEL, "error"},
+      {ge::ir_option::OP_DEBUG_LEVEL, "0"},
+      {ge::ir_option::INPUT_FORMAT, "NCHW"}};
   ATC_CHECK(aclgrphBuildModel(graph, options, op->model));
   OfLiteAscendGraphBuilderFinialize();
 
