@@ -24,7 +24,7 @@ limitations under the License.
 
 namespace {
 
-typedef struct MlitJitOp {
+typedef struct MlirJitOp {
   OfLiteVTableHandle handle;
 
   ge::ModelBufferData model;
@@ -35,7 +35,7 @@ typedef struct MlitJitOp {
   int32_t output_count;
   aclmdlDataset* input_dataset;
   aclmdlDataset* output_dataset;
-} MlitJitOp;
+} MlirJitOp;
 
 void OfLiteAscendDestoryDataset(aclmdlDataset* dataset) {
   for (size_t i = 0; i < aclmdlGetDatasetNumBuffers(dataset); ++i) {
@@ -45,8 +45,8 @@ void OfLiteAscendDestoryDataset(aclmdlDataset* dataset) {
   ACL_CHECK(aclmdlDestroyDataset(dataset));
 }
 
-void OfLiteAscendMlitJitOpDestory(OfLiteOperator* op) {
-  MlitJitOp* impl = reinterpret_cast<MlitJitOp*>(op);
+void OfLiteAscendMlirJitOpDestory(OfLiteOperator* op) {
+  MlirJitOp* impl = reinterpret_cast<MlirJitOp*>(op);
   OfLiteAscendDestoryDataset(impl->input_dataset);
   OfLiteAscendDestoryDataset(impl->output_dataset);
   ACL_CHECK(aclmdlUnload(impl->model_id));
@@ -55,13 +55,13 @@ void OfLiteAscendMlitJitOpDestory(OfLiteOperator* op) {
   OfLiteFree(op);
 }
 
-void OfLiteAscendMlitJitOpCompute(OfLiteOperator* op,
+void OfLiteAscendMlirJitOpCompute(OfLiteOperator* op,
                                   const OfLiteTensorSpan& inputs,
                                   const OfLiteTensorSpan& outputs) {
   OfLiteAscendDevice* device = OfLiteAscendObtainDevice();
   ACL_CHECK(aclrtSetCurrentContext(device->context));
 
-  MlitJitOp* impl = reinterpret_cast<MlitJitOp*>(op);
+  MlirJitOp* impl = reinterpret_cast<MlirJitOp*>(op);
   if (inputs.size != impl->input_count) {
     OFLITE_FAIL("mlit_jit input count mismatch\n");
   }
@@ -86,8 +86,8 @@ void OfLiteAscendMlitJitOpCompute(OfLiteOperator* op,
 }
 
 static OfLiteOperatorVTable vtable = {
-    .destory = OfLiteAscendMlitJitOpDestory,
-    .compute = OfLiteAscendMlitJitOpCompute,
+    .destory = OfLiteAscendMlirJitOpDestory,
+    .compute = OfLiteAscendMlirJitOpCompute,
 };
 
 ge::Graph OfLiteAscendLoadGraph(const void* buffer, size_t size) {
@@ -145,7 +145,7 @@ aclmdlDataset* OfLiteAscendCreateDataset(size_t count) {
 }  // namespace
 
 ASCEND_CREATE_OP(mlir_jit) {
-  MlitJitOp* op = reinterpret_cast<MlitJitOp*>(OfLiteMalloc(sizeof(MlitJitOp)));
+  MlirJitOp* op = reinterpret_cast<MlirJitOp*>(OfLiteMalloc(sizeof(MlirJitOp)));
   op->handle.vtable = &vtable;
 
   OfLiteStringRef mlir_assembly = OfLiteOpDefQueryAttrValueByName_AsString(
