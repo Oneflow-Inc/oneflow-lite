@@ -18,23 +18,7 @@ limitations under the License.
 
 #include "acl/acl_rt.h"
 #include "oneflow-lite/base/common.h"
-
-inline aclrtMemcpyKind OfLiteAscendComputeMemcpyKind(OfLiteMemType src_type,
-                                                     OfLiteMemType dst_type) {
-  if (src_type == OfLiteMemType_Device) {
-    if (dst_type = OfLiteMemType_Device) {
-      return ACL_MEMCPY_DEVICE_TO_DEVICE;
-    } else {
-      return ACL_MEMCPY_DEVICE_TO_HOST;
-    }
-  } else {
-    if (dst_type = OfLiteMemType_Device) {
-      return ACL_MEMCPY_HOST_TO_DEVICE;
-    } else {
-      return ACL_MEMCPY_HOST_TO_HOST;
-    }
-  }
-}
+#include "oneflow-lite/delegates/ascend/ascend_device.h"
 
 #define ACL_CHECK(status)                                        \
   if (status != ACL_SUCCESS) {                                   \
@@ -45,5 +29,10 @@ inline aclrtMemcpyKind OfLiteAscendComputeMemcpyKind(OfLiteMemType src_type,
   if (status != ge::GRAPH_SUCCESS) {                          \
     OFLITE_FAIL("failed to call ATC graph api: %d\n", status) \
   }
+
+OfLiteAscendDevice* OfLiteAscendObtainDevice();
+
+aclrtMemcpyKind OfLiteAscendComputeMemcpyKind(OfLiteMemType src_type,
+                                              OfLiteMemType dst_type);
 
 #endif  // ONEFLOW_LITE_DELAGATES_ASCEND_ASCEND_UTILS_H_

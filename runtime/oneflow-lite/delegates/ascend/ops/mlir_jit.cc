@@ -26,9 +26,13 @@ namespace {
 
 typedef struct MlitJitOp {
   OfLiteVTableHandle handle;
+
   ge::ModelBufferData model;
   uint32_t model_id;
   aclmdlDesc* model_desc;
+
+  int32_t input_count;
+  int32_t output_count;
   aclmdlDataset* input_dataset;
   aclmdlDataset* output_dataset;
 } MlitJitOp;
@@ -53,7 +57,29 @@ void OfLiteAscendMlitJitOpDestory(OfLiteOperator* op) {
 
 void OfLiteAscendMlitJitOpCompute(OfLiteOperator* op,
                                   const OfLiteTensorSpan& inputs,
-                                  const OfLiteTensorSpan& outputs) {}
+                                  const OfLiteTensorSpan& outputs) {
+  OfLiteAscendDevice* device = OfLiteAscendObtainDevice();
+  ACL_CHECK(aclrtSetCurrentContext(device->context));
+
+  MlitJitOp* impl = reinterpret_cast<MlitJitOp*>(op);
+  if (inputs.size != impl->input_count) {
+    OFLITE_FAIL("mlit_jit input count mismatch\n");
+  }
+  if (outputs.size != impl->output_count) {
+    OFLITE_FAIL("mlit_jit output count mismatch\n");
+  }
+  for (size_t i = 0; i < impl->input_count; ++i) {
+    OfLiteTensor* input = inputs.items[i];
+    aclDataBuffer* data_buffer = aclmdlGetDatasetBuffer(impl->input_dataset, i);
+    ACL_CHECK(aclUpdateDataBuffer(data_buffer, OfLiteTensorData(input), OfLiteTensorDataSize(input)));
+  }
+  for (size_t i = 0; i < impl->output_count; ++i) {
+    OfLiteTensor* output = outputs.items[i];
+    aclDataBuffer* data_buffer = aclmdlGetDatasetBuffer(impl->output_dataset, i);
+    ACL_CHECK(aclUpdateDataBuffer(data_buffer, OfLiteTensorData(output), OfLiteTensorDataSize(output)));
+  }
+  ACL_CHECK(aclmdlExecute(impl->model_id, impl->input_dataset, impl->output_dataset));
+}
 
 static OfLiteOperatorVTable vtable = {
     .destory = OfLiteAscendMlitJitOpDestory,
@@ -123,12 +149,12 @@ ASCEND_CREATE_OP(mlir_jit) {
   ge::Graph graph =
       OfLiteAscendLoadGraph(mlir_assembly.data, mlir_assembly.size);
 
-  std::map<ge::AscendString, ge::AscendString> options;
-  options.insert(std::make_pair(ge::ir_option::LOG_LEVEL, "error"));
-  options.insert(std::make_pair(ge::ir_option::OP_DEBUG_LEVEL, "0"));
-  options.insert(std::make_pair(ge::ir_option::INPUT_FORMAT, "NCHW"));
-
   OfLiteAscendGraphBuilderInitialize();
+  std::map<ge::AscendString, ge::AscendString> options = {
+    {ge::ir_option::LOG_LEVEL, "error"},
+    {ge::ir_option::OP_DEBUG_LEVEL, "0"},
+    {ge::ir_option::INPUT_FORMAT, "NCHW"}
+  };
   ATC_CHECK(aclgrphBuildModel(graph, options, op->model));
   OfLiteAscendGraphBuilderFinialize();
 
@@ -140,9 +166,9 @@ ASCEND_CREATE_OP(mlir_jit) {
   }
   ACL_CHECK(aclmdlGetDesc(op->model_desc, op->model_id));
 
-  op->input_dataset =
-      OfLiteAscendCreateDataset(aclmdlGetNumInputs(op->model_desc));
-  op->output_dataset =
-      OfLiteAscendCreateDataset(aclmdlGetNumOutputs(op->model_desc));
+  op->input_count = aclmdlGetNumInputs(op->model_desc);
+  op->output_count = aclmdlGetNumOutputs(op->model_desc);
+  op->input_dataset = OfLiteAscendCreateDataset(op->input_count);
+  op->output_dataset = OfLiteAscendCreateDataset(op->output_count);
   return reinterpret_cast<OfLiteOperator*>(op);
 }

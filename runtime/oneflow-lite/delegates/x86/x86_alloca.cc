@@ -20,5 +20,5 @@ limitations under the License.
 
 OfLiteAlloca* OfLiteX86AllocaCreate(OfLiteDevice* device,
                                     OfLiteMemType mem_type) {
-  return OfLiteGenericAllocaCreate(device, mem_type);
+  return OfLiteGenericAllocaCreate(device, OfLiteMemType_Host);
 }

@@ -21,5 +21,7 @@ int main(int argc, char* argv[]) {
   if (!context) {
     std::cout << "failed to create execution context" << std::endl;
   }
+
+  OfLiteExecutionContextInvoke(context);
   return 0;
 }

@@ -19,16 +19,9 @@ limitations under the License.
 #include "oneflow-lite/base/memory.h"
 #include "oneflow-lite/base/stringref.h"
 #include "oneflow-lite/core/device.h"
-#include "oneflow-lite/core/vtable_handle.h"
 #include "oneflow-lite/delegates/ascend/ascend_alloca.h"
 #include "oneflow-lite/delegates/ascend/ascend_create_op.h"
 #include "oneflow-lite/delegates/ascend/ascend_utils.h"
-
-typedef struct OfLiteAscendDevice {
-  OfLiteVTableHandle handle;
-  size_t ordinal;
-  aclrtContext context;
-} OfLiteAscendDevice;
 
 void OfLiteAscendDeviceDestory(OfLiteDevice* device) {
   ACL_CHECK(aclrtDestroyContext(

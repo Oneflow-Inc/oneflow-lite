@@ -9,6 +9,7 @@ set(OFLITE_RUNTIME_DELEGATE_X86_SRCS
   ascend_create_op.cc
   ascend_device.cc
   ascend_driver.cc
+  ascend_utils.cc
   ${ASCEND_OP_SRCS}
 )
 add_library(oneflow-lite-runtime-delegate-ascend OBJECT ${OFLITE_RUNTIME_DELEGATE_X86_SRCS})

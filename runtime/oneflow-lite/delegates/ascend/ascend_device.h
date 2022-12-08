@@ -16,9 +16,17 @@ limitations under the License.
 #ifndef ONEFLOW_LITE_DELEGATES_ASCEND_ASCEND_DEVICE_H_
 #define ONEFLOW_LITE_DELEGATES_ASCEND_ASCEND_DEVICE_H_
 
+#include "acl/acl_rt.h"
 #include "oneflow-lite/core/device.h"
+#include "oneflow-lite/core/vtable_handle.h"
 
 static const char* OfLiteAscendIdentifier = "ascend";
+
+typedef struct OfLiteAscendDevice {
+  OfLiteVTableHandle handle;
+  size_t ordinal;
+  aclrtContext context;
+} OfLiteAscendDevice;
 
 OfLiteDevice* OfLiteAscendDeviceCreate(size_t ordinal);
 
