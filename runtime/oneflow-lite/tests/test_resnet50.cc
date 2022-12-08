@@ -55,5 +55,8 @@ int main(int argc, char* argv[]) {
     std::cout << output_data[i] << ", ";
   }
   std::cout << "...]" << std::endl;
+
+  OfLiteExecutionContextDestory(context);
+  OfLiteExecutableDestory(executable);
   return 0;
 }
