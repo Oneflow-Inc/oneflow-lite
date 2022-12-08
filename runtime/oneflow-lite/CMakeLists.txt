@@ -10,4 +10,22 @@ get_property(
 add_library(oneflow-lite-runtime SHARED dummy.cc ${OFLITE_RUNTIME_OBJECT_LIBS})
 target_link_libraries(oneflow-lite-runtime flatcc-runtime ${OFLITE_THIRDPARTY_LIBS})
 
+install(TARGETS oneflow-lite-runtime
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  DESTINATION include
+  FILES_MATCHING
+  PATTERN "base/*.h"
+  PATTERN "core/*.h"
+  PATTERN "core/buffer.h" EXCLUDE
+  PATTERN "core/device_util.h" EXCLUDE
+  PATTERN "core/device_context.h" EXCLUDE
+  PATTERN "core/execution_unit.h" EXCLUDE
+  PATTERN "delegates" EXCLUDE
+  PATTERN "tests" EXCLUDE
+)
+
 add_subdirectory(tests)
