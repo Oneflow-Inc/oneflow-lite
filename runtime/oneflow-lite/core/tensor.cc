@@ -63,8 +63,13 @@ OFLITE_API void OfLiteTensorDestory(OfLiteTensor* tensor) {
   OfLiteFree(tensor_impl);
 }
 
-OFLITE_API void OfLiteTensorDims(const OfLiteTensor* tensor, OfLiteDims* dims) {
-  memcpy(dims, &tensor->desc.dims, sizeof(OfLiteDims));
+OFLITE_API void OfLiteTensorTensorDesc(const OfLiteTensor* tensor,
+                                       const OfLiteTensorDesc** desc) {
+  *desc = &tensor->desc;
+}
+
+OFLITE_API void OfLiteTensorDims(const OfLiteTensor* tensor, const OfLiteDims** dims) {
+  *dims = &tensor->desc.dims;
 }
 
 OFLITE_API void OfLiteTensorDataType(const OfLiteTensor* tensor,

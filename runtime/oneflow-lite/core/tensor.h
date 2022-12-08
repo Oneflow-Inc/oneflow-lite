@@ -45,11 +45,18 @@ OFLITE_API void OfLiteTensorCreateFromBuffer(const OfLiteTensorDesc& desc,
 
 OFLITE_API void OfLiteTensorDestory(OfLiteTensor* tensor);
 
-OFLITE_API void OfLiteTensorDims(const OfLiteTensor* tensor, OfLiteDims* dims);
+OFLITE_API void OfLiteTensorTensorDesc(const OfLiteTensor* tensor,
+                                       const OfLiteTensorDesc** desc);
+
+OFLITE_API void OfLiteTensorDims(const OfLiteTensor* tensor,
+                                 const OfLiteDims** dims);
+
 OFLITE_API void OfLiteTensorDataType(const OfLiteTensor* tensor,
                                      OfLiteDataType* dtype);
+
 OFLITE_API void OfLiteTensorLayout(const OfLiteTensor* tensor,
                                    OfLiteLayout* layout);
+
 OFLITE_API void OfLiteTensorAlloca(const OfLiteTensor* tensor,
                                    OfLiteAlloca** alloca);
 
@@ -57,9 +64,11 @@ OFLITE_API void OfLiteTensorResize(OfLiteTensor* tensor,
                                    const OfLiteDims& dims);
 
 OFLITE_API void* OfLiteTensorData(const OfLiteTensor* tensor);
+
 OFLITE_API size_t OfLiteTensorDataSize(const OfLiteTensor* tensor);
 
 OFLITE_API bool OfLiteTensorIsHost(const OfLiteTensor* tensor);
+
 OFLITE_API OfLiteMemType OfLiteTensorMemType(const OfLiteTensor* tensor);
 
 #ifdef __cplusplus
