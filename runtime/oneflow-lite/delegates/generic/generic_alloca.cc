@@ -62,8 +62,8 @@ static OfLiteAllocaVTable vtable = {
     .query_mem_type = OfLiteGenericAllocaQueryMemType,
 };
 
-OFLITE_API OfLiteAlloca* OfLiteGenericAllocaCreate(OfLiteDevice* device,
-                                                   OfLiteMemType mem_type) {
+OfLiteAlloca* OfLiteGenericAllocaCreate(OfLiteDevice* device,
+                                        OfLiteMemType mem_type) {
   OfLiteGenericAlloca* alloca = reinterpret_cast<OfLiteGenericAlloca*>(
       OfLiteMalloc(sizeof(OfLiteGenericAlloca)));
   alloca->handle.vtable = &vtable;

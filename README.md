@@ -4,7 +4,7 @@ oneflow-lite由compiler和runtime两部分组成。compiler负责对oneflow训�
 
 Compiler支持对计算图进行一序列优化，包括计算融合、冗余消除、Layout变换等中端图优化，也包括内存规划、算子放置、计算图切分和后端代码生成等优化。
 
-Runtime由纯C语言开发，核心框架二进制大小只有50K左右，包含硬件抽象层、执行的上下文和支撑库，支持以非常简洁的方式集成各类硬件模块，比如X86 CPU、英伟达CUDA GPU、华为Ascend NPU等。
+Runtime由纯C语言开发，核心框架二进制大小只有50KB左右，包含硬件抽象层、执行的上下文和支撑库，支持以非常简洁的方式集成各类硬件模块，比如X86 CPU、英伟达CUDA GPU、华为Ascend NPU等。
 
 
 
@@ -83,7 +83,7 @@ Runtime由纯C语言开发，核心框架二进制大小只有50K左右，包含
      graph = MyGraph(model)
      flow.save(graph, "./resnet50_model/")
 
-  2. 使用`oneflow-lite-compile`工具将模型编译成`oneflow-lite`的模型文件格式
+  2. 使用`oneflow-lite-compile`工具将模型编译成`oneflow-lite`的模型文件格式（以华为Ascend NPU为例）
 
      ```shell
      oneflow-lite/compiler/build/bin/oneflow-lite-compile ./resnet50_model -o resnet50_lite.bin --targets=ascend

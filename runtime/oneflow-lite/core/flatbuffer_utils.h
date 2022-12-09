@@ -29,6 +29,8 @@ typedef struct OfLiteAttrDefVec OfLiteAttrDefVec;
 typedef struct OfLiteAttrDef OfLiteAttrDef;
 typedef struct OfLiteAttrDefValue OfLiteAttrDefValue;
 
+OFLITE_API void OfLiteOpDefName(const OfLiteOpDef* def, OfLiteStringRef* name);
+
 OFLITE_API const OfLiteAttrDefVec* OfLiteOpDefQueryAttrs(
     const OfLiteOpDef* def);
 

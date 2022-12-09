@@ -22,7 +22,6 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   PATTERN "core/*.h"
   PATTERN "core/buffer.h" EXCLUDE
   PATTERN "core/device_util.h" EXCLUDE
-  PATTERN "core/device_context.h" EXCLUDE
   PATTERN "core/execution_unit.h" EXCLUDE
   PATTERN "delegates" EXCLUDE
   PATTERN "tests" EXCLUDE

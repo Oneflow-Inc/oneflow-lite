@@ -15,11 +15,7 @@ limitations under the License.
 */
 #include "oneflow-lite/delegates/ascend/ascend_create_op.h"
 
-void OfLiteOpDefName(const OfLiteOpDef* def, OfLiteStringRef* name) {
-  flatbuffers_string_t flatc_name = oneflow_lite_OpDef_name(
-      reinterpret_cast<const oneflow_lite_OpDef_table_t>(def));
-  *name = OfLiteStringRef{flatc_name, flatbuffers_string_len(flatc_name)};
-}
+#include "oneflow-lite/core/flatbuffer_utils.h"
 
 OfLiteOperator* OfLiteAscendCreateOp(OfLiteDevice* device,
                                      const OfLiteOpDef* def) {
