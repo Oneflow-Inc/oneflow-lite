@@ -1,4 +1,4 @@
-oneflow-lite是一个轻量化的模型部署框架，支持在MCU、移动端、边缘端和服务端等各种应用场景下进行高效的推理计算。
+oneflow-lite是一个轻量化的模型部署框架，支持在MCU、移动端、边缘端和服务端等各种应用场景下执行高效的推理任务。
 
 oneflow-lite由compiler和runtime两部分组成。compiler负责对oneflow训练保存的checkpoint进行编译优化，最终转换成oneflow-lite runtime所支持的二进制文件格式，runtime提供该二进制文件的运行时环境，驱动硬件执行计算过程，并向上提供合适的用户接口。
 
