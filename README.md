@@ -23,7 +23,7 @@ Runtime由纯C语言开发，核心框架二进制大小只有50KB左右，包�
      - 目标硬件为CUDA
 
        ```shell
-       cd compiler && mkdir build
+       cd compiler && mkdir build && cd build
        cmake .. -DLITE_USE_CUDA=ON && make
        ```
 
