@@ -15,7 +15,7 @@ limitations under the License.
 */
 #include "oneflow-lite/core/device_context.h"
 
-#include <threads.h>
+#include <thread>
 
 #include "oneflow-lite/base/memory.h"
 
