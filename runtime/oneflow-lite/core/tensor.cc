@@ -18,6 +18,25 @@ limitations under the License.
 #include <string.h>
 
 #include "oneflow-lite/base/memory.h"
+#include "oneflow-lite/schemas/executable_generated.h"
+
+OFLITE_API void OfLiteTensorDescCreateFromTensorDef(
+    const OfLiteTensorDef* tensor, OfLiteTensorDesc* desc) {
+  oneflow_lite_TensorDef_table_t flatcc_tensor =
+      reinterpret_cast<oneflow_lite_TensorDef_table_t>(tensor);
+  desc->dtype = OfLiteDataTypeConvertFromString(
+      oneflow_lite_TensorDef_type(flatcc_tensor));
+  desc->layout = OfLiteLayoutConvertFromString(
+      oneflow_lite_TensorDef_layout(flatcc_tensor));
+  flatbuffers_int64_vec_t sizes = oneflow_lite_TensorDef_sizes(flatcc_tensor);
+  desc->dims.ndim = flatbuffers_int64_vec_len(sizes);
+  if (!OfLiteDimsCheck(desc->dims)) {
+    OFLITE_FAIL("Tensor sizes is too large, only supports up to 10D array\n");
+  }
+  for (size_t i = 0; i < desc->dims.ndim; ++i) {
+    desc->dims.sizes[i] = flatbuffers_int64_vec_at(sizes, i);
+  }
+}
 
 typedef struct OfLiteTensor {
   OfLiteTensorDesc desc;

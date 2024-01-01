@@ -28,12 +28,16 @@ extern "C" {
 #endif  // __cplusplus
 
 typedef struct OfLiteTensor OfLiteTensor;
+typedef struct OfLiteTensorDef OfLiteTensorDef;
 
 typedef struct OfLiteTensorDesc {
   OfLiteDims dims;
   OfLiteDataType dtype;
   OfLiteLayout layout;
 } OfLiteTensorDesc;
+
+OFLITE_API void OfLiteTensorDescCreateFromTensorDef(
+    const OfLiteTensorDef* tensor, OfLiteTensorDesc* desc);
 
 OFLITE_API void OfLiteTensorCreate(const OfLiteTensorDesc& desc,
                                    OfLiteAlloca* alloca, OfLiteTensor** tensor);
