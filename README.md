@@ -38,7 +38,7 @@ Runtime由纯C语言开发，核心框架二进制大小只有50KB左右，包�
        接着执行下面命令完成编译。
 
        ```shell
-       cd compiler && mkdir build
+       cd compiler && mkdir build && cd build
        cmake .. -DLITE_USE_ASCEND_NPU=ON && make
        ```
 
@@ -52,7 +52,7 @@ Runtime由纯C语言开发，核心框架二进制大小只有50KB左右，包�
 
   - 在目标硬件平台上编译
 
-    比如目标平台为X86 CPU + Ascend NPU，编译命令如下，
+    比如目标平台为X86 CPU + Ascend NPU(同样适用于华为昇腾910)，编译命令如下，
 
     ```shell
     cd runtime && mkdir build
@@ -69,19 +69,32 @@ Runtime由纯C语言开发，核心框架二进制大小只有50KB左右，包�
 
   1. 使用graph模式导出mlir模型
 
+      ```shell
+      pip install flowvision
+      ```
+     
      ```python
-     class MyGraph(nn.Graph):
-         def __init__(self, model):
-             super().__init__()
-             self.model = model
-     
-         def build(self, *input):
-             return self.model(*input)
-     
-     model = Resnet50Module()
-     model.eval()
-     graph = MyGraph(model)
-     flow.save(graph, "./resnet50_model/")
+        from flowvision.models import ModelCreator
+        
+        model=ModelCreator.create_model("resnet50",pretrained=True)
+
+        class MyGraph(nn.Graph):
+            def __init__(self, model):
+                super().__init__()
+                self.model = model
+
+            def build(self, *input):
+                return self.model(*input)
+
+        if __name__ == "__main__":
+             
+            model=ModelCreator.create_model("resnet50",pretrained=True)
+            model.eval()
+            graph = MyGraph(model)
+            input = flow.rand(1,3,224,224)
+            outs = graph(input)
+            flow.save(graph, "./esnet50_model/")
+      ```
 
   2. 使用`oneflow-lite-compile`工具将模型编译成`oneflow-lite`的模型文件格式（以华为Ascend NPU为例）
 
